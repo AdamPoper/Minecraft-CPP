@@ -13,7 +13,7 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 800
 
-int main(void)
+int main()
 {
     Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Minecraft");
 
@@ -94,8 +94,11 @@ int main(void)
     };
 
     ShaderProgram shaderProgram;
-    VertexShader vs = Shader::CreateShader<VertexShader>();
-    FragmentShader fs = Shader::CreateShader<FragmentShader>();
+    // VertexShader vs = Shader::CreateShader<VertexShader>();
+    // FragmentShader fs = Shader::CreateShader<FragmentShader>();
+    std::shared_ptr<Shader> vs = Shader::CreateShader<VertexShader>();
+    std::shared_ptr<Shader> fs = Shader::CreateShader<FragmentShader>();
+
     shaderProgram.AttachShader(vs);
     shaderProgram.AttachShader(fs);
     shaderProgram.CreateShaderProgram();
@@ -104,16 +107,6 @@ int main(void)
 
     VertexBuffer vbo(vertices.data(), vertices.size());
     IndexBuffer ibo(indices.data(), indices.size());
-
-    // uint32_t vbo;
-    // glGenBuffers(1, &vbo);
-    // glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), (const void*)vertices.data(), GL_STATIC_DRAW);
-
-    // uint32_t ibo;
-    // glGenBuffers(1, &ibo);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indices.size(), (const void*)indices.data(), GL_STATIC_DRAW);
 
     // vertices
     vao.push(3, GL_FLOAT, GL_FALSE);
@@ -158,7 +151,7 @@ int main(void)
         uint32_t error = glGetError();
         if (error)
         {
-            std::cout << error << std::endl;
+            MC_CONSOLE_LOG_ERROR(error);
         }
 
         window.OnUpdate();

@@ -15,24 +15,28 @@ public:
 	Shader();
 
 	template<typename T>
-	static T CreateShader()
+	static std::shared_ptr<T> CreateShader()
 	{
 		typedef T ShaderType;
 		if (std::is_base_of<Shader, ShaderType>::value)
 		{
-			ShaderType shader;
-			shader.LoadShader();
-			shader.CompileShader();
+			std::shared_ptr<ShaderType> shader = std::make_shared<ShaderType>();
+			shader->LoadShader();
+			shader->CompileShader();
 			return shader;
 		}
 		else
 		{
 			MC_CONSOLE_LOG("Invalid Shader Type");
-			return T();
+			return std::make_shared<T>();
 		}
 	}
 
-	Shader(const Shader&);
+	Shader(const Shader& shader);
+
+	Shader(Shader&& shader) noexcept;
+
+	Shader& operator=(Shader&& shader) noexcept;
 
 	uint32_t GetRenderID() const;
 
@@ -54,7 +58,7 @@ public:
 
 	ShaderProgram();
 
-	void AttachShader(const Shader& shader);
+	void AttachShader(std::shared_ptr<Shader>& shader);
 
 	void Bind() const;
 
@@ -69,7 +73,7 @@ private:
 	void DeleteShaders();
 
 private:
-	std::vector<Shader> m_shaders;
+	std::vector<std::shared_ptr<Shader>> m_shaders;
 	uint32_t m_renderID;
 };
 

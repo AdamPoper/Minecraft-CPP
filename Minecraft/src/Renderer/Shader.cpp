@@ -7,18 +7,41 @@ Shader::Shader(const Shader& shader)
 	m_filePath = shader.m_filePath;
 	m_sourceCode = shader.m_sourceCode;
 	m_renderID = shader.m_renderID;
+	MC_CONSOLE_LOG("Shader Copied");
+}
+
+Shader::Shader(Shader&& shader) noexcept
+	: m_filePath(std::move(shader.m_filePath)),
+	m_renderID(shader.m_renderID),
+	m_sourceCode(shader.m_sourceCode)
+{
+	MC_CONSOLE_LOG("Shader Moved");
+}
+
+Shader& Shader::operator=(Shader&& shader) noexcept
+{
+	if (this != &shader)
+	{
+		m_renderID = std::move(shader.m_renderID);
+		m_filePath = std::move(shader.m_filePath);
+		m_sourceCode = std::move(shader.m_sourceCode);
+		MC_CONSOLE_LOG("Shader Moved");
+	}
+	return *this;
 }
 
 VertexShader::VertexShader()
 {
 	m_filePath = "res/shaders/vertexShader.shader";
 	m_renderID = glCreateShader(GL_VERTEX_SHADER);
+	MC_CONSOLE_LOG("Vertex Shader Created");
 }
 
 FragmentShader::FragmentShader()
 {
 	m_filePath = "res/shaders/fragmentShader.shader";
 	m_renderID = glCreateShader(GL_FRAGMENT_SHADER);
+	MC_CONSOLE_LOG("Fragment Shader Created");
 }
 
 void Shader::LoadShader()
@@ -55,15 +78,15 @@ ShaderProgram::ShaderProgram()
 	m_renderID = glCreateProgram();
 }
 
-void ShaderProgram::AttachShader(const Shader& shader)
+void ShaderProgram::AttachShader(std::shared_ptr<Shader>& shader)
 {
 	m_shaders.push_back(shader);
 }
 
 void ShaderProgram::CreateShaderProgram()
 {
-	for (const Shader& shader : m_shaders)
-		glAttachShader(m_renderID, shader.GetRenderID());
+	for (std::shared_ptr<Shader> shader : m_shaders)
+		glAttachShader(m_renderID, shader->GetRenderID());
 	glLinkProgram(m_renderID);
 	glValidateProgram(m_renderID);
 	Bind();
@@ -82,8 +105,8 @@ void ShaderProgram::UnBind() const
 
 void ShaderProgram::DeleteShaders()
 {
-	for (const Shader& shader : m_shaders)
-		glDeleteShader(shader.GetRenderID());
+	for (std::shared_ptr<Shader> shader : m_shaders)
+		glDeleteShader(shader->GetRenderID());
 }
 
 void ShaderProgram::SetUniformMat4(const std::string& name, const glm::mat4& matrix)
