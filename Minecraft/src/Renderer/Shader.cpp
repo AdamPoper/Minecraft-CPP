@@ -87,8 +87,17 @@ void ShaderProgram::CreateShaderProgram()
 {
 	for (std::shared_ptr<Shader> shader : m_shaders)
 		glAttachShader(m_renderID, shader->GetRenderID());
-	glLinkProgram(m_renderID);
 	glValidateProgram(m_renderID);
+	glLinkProgram(m_renderID);
+	int linkSuccess;
+	glGetProgramiv(m_renderID, GL_LINK_STATUS, &linkSuccess);
+	if (!linkSuccess)
+	{
+		char infoLog[512];
+		glGetShaderInfoLog(m_renderID, 512, NULL, infoLog);
+		printf("shader id: %d failed\n", m_renderID);
+		printf("%s\n", infoLog);
+	}
 	Bind();
 	DeleteShaders();
 }
@@ -113,4 +122,15 @@ void ShaderProgram::SetUniformMat4(const std::string& name, const glm::mat4& mat
 {
 	int location = glGetUniformLocation(m_renderID, name.c_str());
 	glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]);
+}
+
+void ShaderProgram::SetUniform1i(const std::string& name, uint32_t value)
+{
+	uint32_t loc;
+	loc = glGetUniformLocation(m_renderID, name.c_str());
+	if (loc == GL_INVALID_INDEX)
+	{
+		MC_CONSOLE_LOG("Invalid Index");
+	}
+	glUniform1i(loc, value);
 }

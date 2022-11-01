@@ -9,6 +9,7 @@
 #include "Util/Vertex.h"
 #include "Renderer/VertexArray.h"
 #include "Renderer/Buffer.h"
+#include "Renderer/TextureAtlas.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 800
@@ -44,10 +45,10 @@ int main()
     };
 
     std::array<Vertex, 4> vertices = {
-        Vertex(positions[0], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
-        Vertex(positions[1], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
-        Vertex(positions[2], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
-        Vertex(positions[3], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
+        Vertex(positions[0], glm::vec2(0.0f, 1.0f)),
+        Vertex(positions[1], glm::vec2(1.0f, 1.0f)),
+        Vertex(positions[2], glm::vec2(1.0f, 0.0f)),
+        Vertex(positions[3], glm::vec2(0.0f, 0.0f)),
        // Vertex(positions[0], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
        // Vertex(positions[2], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
        // Vertex(positions[3], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
@@ -93,26 +94,29 @@ int main()
          0, 2, 3,
     };
 
+    std::shared_ptr<VertexArray> vao = std::make_shared<VertexArray>();
+
+    std::shared_ptr<VertexBuffer> vbo = std::make_shared<VertexBuffer>(vertices.size() * sizeof(Vertex));
+    std::shared_ptr<IndexBuffer> ibo = std::make_shared<IndexBuffer>(indices.size());
+
+    vbo->SetData(vertices.data(), vertices.size() * sizeof(Vertex));
+    ibo->SetData(indices.data(), indices.size());
+
+    TextureAtlas::Get().Create();
+
+    // vertices
+    vao->push(3, GL_FLOAT, GL_FALSE);
+
+    // texture coordinates
+    vao->push(2, GL_FLOAT, GL_FALSE);
+
     ShaderProgram shaderProgram;
-    // VertexShader vs = Shader::CreateShader<VertexShader>();
-    // FragmentShader fs = Shader::CreateShader<FragmentShader>();
     std::shared_ptr<Shader> vs = Shader::CreateShader<VertexShader>();
     std::shared_ptr<Shader> fs = Shader::CreateShader<FragmentShader>();
 
     shaderProgram.AttachShader(vs);
     shaderProgram.AttachShader(fs);
     shaderProgram.CreateShaderProgram();
-
-    VertexArray vao;
-
-    VertexBuffer vbo(vertices.data(), vertices.size());
-    IndexBuffer ibo(indices.data(), indices.size());
-
-    // vertices
-    vao.push(3, GL_FLOAT, GL_FALSE);
-
-    // color
-    vao.push(4, GL_FLOAT, GL_FALSE);
 
     float speed = 5.0f;
 
@@ -132,6 +136,9 @@ int main()
         if (Window::isKeyPressed(KEY_D))
             window.getCamera().strafeRight(ts);
 
+        TextureAtlas::Get().Bind();
+        shaderProgram.SetUniform1i(TextureAtlas::Get().GetOpenGLUniformID(), 0);
+
         window.getCamera().onUpdate();
 
         shaderProgram.SetUniformMat4("u_projection", window.getCamera().getProjection());
@@ -139,14 +146,13 @@ int main()
         shaderProgram.SetUniformMat4("u_model", model);
 
         shaderProgram.Bind();
-        vao.Bind();
-        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        ibo.Bind();
+        vao->Bind();
+        ibo->Bind();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.3f, 0.5f, 0.9f, 1.0f);
 
-        glDrawElements(GL_TRIANGLES, ibo.GetSize(), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, ibo->GetCount(), GL_UNSIGNED_INT, nullptr);
         
         uint32_t error = glGetError();
         if (error)

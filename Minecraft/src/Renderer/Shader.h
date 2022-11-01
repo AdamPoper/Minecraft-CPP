@@ -68,6 +68,8 @@ public:
 
 	void SetUniformMat4(const std::string& name, const glm::mat4& matrix);
 
+	void SetUniform1i(const std::string& name, uint32_t value);
+
 private:
 
 	void DeleteShaders();

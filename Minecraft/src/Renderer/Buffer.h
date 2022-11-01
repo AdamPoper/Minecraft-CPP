@@ -16,8 +16,6 @@ public:
 
 	virtual void UnBind() = 0;
 
-	virtual constexpr std::size_t GetSize() const = 0;
-
 protected:
 
 	uint32_t m_renderID;
@@ -29,19 +27,21 @@ public:
 
 	VertexBuffer() = default;
 
+	VertexBuffer(std::size_t size);
+
 	VertexBuffer(Vertex* data, std::size_t size);
+
+	void SetData(Vertex* data, std::size_t size);
 
 	void Bind();
 
 	void UnBind();
 
-	constexpr std::size_t GetSize() const;
-
-	const Vertex* GetRawData() const;
+	std::size_t GetCount() const;
 
 private:
 
-	std::vector<Vertex> m_buffer;
+	std::size_t m_size;
 };
 
 class IndexBuffer : public Buffer
@@ -50,17 +50,19 @@ public:
 
 	IndexBuffer() = default;
 
-	IndexBuffer(uint32_t* data, std::size_t size);
+	IndexBuffer(uint32_t* data, uint32_t count);
+
+	IndexBuffer(std::size_t size);
+
+	void SetData(uint32_t* data, uint32_t count);
 
 	void Bind();
 
 	void UnBind();
 
-	constexpr std::size_t GetSize() const;
-
-	const uint32_t* GetRawData() const;
+	std::size_t GetCount() const;
 
 private:
 	
-	std::vector<uint32_t> m_buffer;
+	uint32_t m_count;
 };

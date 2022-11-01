@@ -4,30 +4,30 @@
 
 struct Vertex
 {
-	Vertex() : position(), color() {}
+	Vertex() : position(), texCoords() {}
 
-	Vertex(const glm::vec3& pos, const glm::vec4& col)
-		: position(pos), color(col) {}
+	Vertex(const glm::vec3& pos, const glm::vec2& coords)
+		: position(pos), texCoords(coords) {}
 
 	Vertex(const Vertex& v)
 	{
 		position = v.position;
-		color = v.color;
+		texCoords = v.texCoords;
 	}
 
 	Vertex(Vertex&& v) noexcept
-		: position(std::move(v.position)), color(std::move(v.color)) {}
+		: position(std::move(v.position)), texCoords(std::move(v.texCoords)) {}
 
 	Vertex& operator=(Vertex&& v) noexcept
 	{
 		if (this != &v)
 		{
 			position = v.position;
-			color = v.color;
+			texCoords = v.texCoords;
 		}
 		return *this;
 	}
 
 	glm::vec3 position;
-	glm::vec4 color;
+	glm::vec2 texCoords;
 };
