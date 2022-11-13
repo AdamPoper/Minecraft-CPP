@@ -10,6 +10,7 @@
 #include "Renderer/VertexArray.h"
 #include "Renderer/Buffer.h"
 #include "Renderer/TextureAtlas.h"
+#include "world/BlockFace.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 800
@@ -32,77 +33,126 @@ int main()
 
     glm::mat4 model(1.0f);
 
-    std::array<glm::vec3, 4> positions = {
-        glm::vec3(-0.5f,  0.5f, -0.5f), // 0
-        glm::vec3(0.5f,  0.5f, -0.5f), // 1
-        glm::vec3(0.5f, -0.5f, -0.5f), // 2
-
-        glm::vec3(-0.5f, -0.5f, -0.5f), // 3
-        //glm::vec3(-0.5f, -0.5f,  0.5f), // 4
-        //glm::vec3( 0.5f, -0.5f,  0.5f), // 5
-        //glm::vec3( 0.5f,  0.5f,  0.5f), // 6
-        //glm::vec3(-0.5f,  0.5f,  0.5f), // 7
+    std::array<glm::vec3, 8> positions = {
+        glm::vec3(-0.5f,  0.5f,  0.5f), // 0
+        glm::vec3( 0.5f,  0.5f,  0.5f), // 1
+        glm::vec3( 0.5f, -0.5f,  0.5f), // 2
+        glm::vec3(-0.5f, -0.5f,  0.5f), // 3
+        glm::vec3(-0.5f,  0.5f, -0.5f), // 4
+        glm::vec3( 0.5f,  0.5f, -0.5f), // 5
+        glm::vec3( 0.5f, -0.5f, -0.5f), // 6
+        glm::vec3(-0.5f, -0.5f, -0.5f), // 7
     };
 
-    std::array<Vertex, 4> vertices = {
-        Vertex(positions[0], glm::vec2(0.0f, 1.0f)),
-        Vertex(positions[1], glm::vec2(1.0f, 1.0f)),
-        Vertex(positions[2], glm::vec2(1.0f, 0.0f)),
-        Vertex(positions[3], glm::vec2(0.0f, 0.0f)),
-       // Vertex(positions[0], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
-       // Vertex(positions[2], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
-       // Vertex(positions[3], glm::vec4(1.0f, 0.6f, 0.0f, 1.0f)),
-
-        //Vertex(positions[2], glm::vec4(1.0f, 0.0f, 0.6f, 1.0f)),
-        //Vertex(positions[3], glm::vec4(1.0f, 0.0f, 0.6f, 1.0f)),
-        //Vertex(positions[4], glm::vec4(1.0f, 0.0f, 0.6f, 1.0f)),
-        //Vertex(positions[2], glm::vec4(1.0f, 0.0f, 0.6f, 1.0f)),
-        //Vertex(positions[4], glm::vec4(1.0f, 0.0f, 0.6f, 1.0f)),
-        //Vertex(positions[5], glm::vec4(1.0f, 0.0f, 0.6f, 1.0f)),
-        //
-        //Vertex(positions[1], glm::vec4(1.0f, 0.5f, 0.3f, 1.0f)),
-        //Vertex(positions[2], glm::vec4(1.0f, 0.5f, 0.3f, 1.0f)),
-        //Vertex(positions[5], glm::vec4(1.0f, 0.5f, 0.3f, 1.0f)),
-        //Vertex(positions[1], glm::vec4(1.0f, 0.5f, 0.3f, 1.0f)),
-        //Vertex(positions[5], glm::vec4(1.0f, 0.5f, 0.3f, 1.0f)),
-        //Vertex(positions[6], glm::vec4(1.0f, 0.5f, 0.3f, 1.0f)),
-        //
-        //Vertex(positions[4], glm::vec4(2.0f, 0.3f, 0.9f, 1.0f)),
-        //Vertex(positions[5], glm::vec4(2.0f, 0.3f, 0.9f, 1.0f)),
-        //Vertex(positions[6], glm::vec4(2.0f, 0.3f, 0.9f, 1.0f)),
-        //Vertex(positions[4], glm::vec4(2.0f, 0.3f, 0.9f, 1.0f)),
-        //Vertex(positions[6], glm::vec4(2.0f, 0.3f, 0.9f, 1.0f)),
-        //Vertex(positions[7], glm::vec4(2.0f, 0.3f, 0.9f, 1.0f)),
-        //
-        //Vertex(positions[0], glm::vec4(0.2f, 0.2f, 1.0f, 1.0f)),
-        //Vertex(positions[3], glm::vec4(0.2f, 0.2f, 1.0f, 1.0f)),
-        //Vertex(positions[4], glm::vec4(0.2f, 0.2f, 1.0f, 1.0f)),
-        //Vertex(positions[0], glm::vec4(0.2f, 0.2f, 1.0f, 1.0f)),
-        //Vertex(positions[4], glm::vec4(0.2f, 0.2f, 1.0f, 1.0f)),
-        //Vertex(positions[7], glm::vec4(0.2f, 0.2f, 1.0f, 1.0f)),
-        //
-        //Vertex(positions[0], glm::vec4(0.2f, 0.9f, 0.5f, 1.0f)),
-        //Vertex(positions[1], glm::vec4(0.2f, 0.9f, 0.5f, 1.0f)),
-        //Vertex(positions[6], glm::vec4(0.2f, 0.9f, 0.5f, 1.0f)),
-        //Vertex(positions[0], glm::vec4(0.2f, 0.9f, 0.5f, 1.0f)),
-        //Vertex(positions[6], glm::vec4(0.2f, 0.9f, 0.5f, 1.0f)),
-        //Vertex(positions[7], glm::vec4(0.2f, 0.9f, 0.5f, 1.0f)),
+    std::array<glm::vec2, 4> texCoords = {
+        glm::vec2(0.0f, 0.0f), // 0
+        glm::vec2(0.0f, 1.0f), // 1
+        glm::vec2(1.0f, 0.0f), // 2
+        glm::vec2(1.0f, 1.0f)  // 3
     };
 
-    std::array<uint32_t, 6> indices = {
-         0, 1, 2,
+    std::array<Vertex, 24> vertices = {
+        // front
+        Vertex(positions[0], texCoords[1]), // 0
+        Vertex(positions[1], texCoords[3]), // 1
+        Vertex(positions[2], texCoords[2]), // 2
+        Vertex(positions[3], texCoords[0]), // 3
+
+        // back
+        Vertex(positions[4], texCoords[3]), // 4
+        Vertex(positions[5], texCoords[1]), // 5
+        Vertex(positions[6], texCoords[0]), // 6
+        Vertex(positions[7], texCoords[2]), // 7
+
+        // right
+        Vertex(positions[1], texCoords[1]), // 8
+        Vertex(positions[2], texCoords[0]), // 9
+        Vertex(positions[5], texCoords[3]), // 10
+        Vertex(positions[6], texCoords[2]), // 11
+
+        // left
+        Vertex(positions[4], texCoords[1]), // 12
+        Vertex(positions[0], texCoords[3]), // 13
+        Vertex(positions[3], texCoords[2]), // 14
+        Vertex(positions[7], texCoords[0]), // 15
+
+        // bottom
+        Vertex(positions[3], texCoords[0]), // 16
+        Vertex(positions[2], texCoords[2]), // 17
+        Vertex(positions[7], texCoords[1]), // 18
+        Vertex(positions[6], texCoords[3]), // 19
+        
+        // top
+        Vertex(positions[0], texCoords[0]), // 20
+        Vertex(positions[1], texCoords[2]), // 21
+        Vertex(positions[4], texCoords[1]), // 22
+        Vertex(positions[5], texCoords[3]), // 23  
+    };
+
+    std::array<uint32_t, 36> indices = {
+         0, 1, 2, // front
          0, 2, 3,
+         
+         4, 5, 6, // back
+         4, 6, 7,
+
+         8, 9, 10, // right
+         9, 10, 11,
+
+         12, 13, 14, // left
+         12, 14, 15,
+
+         16, 17, 18, // bottom
+         17, 18, 19,
+
+         20, 21, 22, // top
+         21, 22, 23
     };
+
+    TextureAtlas::Get().Create();
+
+    std::vector<BlockFace> blockFaces;
+    blockFaces.push_back(BlockFace(Texture::COBBLE_STONE, Direction::FRONT));
+    blockFaces.push_back(BlockFace(Texture::STONE, Direction::BACK));
+    blockFaces.push_back(BlockFace(Texture::DIRT_GRASS, Direction::RIGHT));
+    blockFaces.push_back(BlockFace(Texture::SAND, Direction::LEFT));
+    blockFaces.push_back(BlockFace(Texture::WOOD_OAK, Direction::TOP));
+    blockFaces.push_back(BlockFace(Texture::WOOD_OAK_PLANK, Direction::BOTTOM));
+
 
     std::shared_ptr<VertexArray> vao = std::make_shared<VertexArray>();
 
-    std::shared_ptr<VertexBuffer> vbo = std::make_shared<VertexBuffer>(vertices.size() * sizeof(Vertex));
-    std::shared_ptr<IndexBuffer> ibo = std::make_shared<IndexBuffer>(indices.size());
+    std::vector<Vertex> blockFaceVertices;
+    for (const BlockFace& blockFace : blockFaces)
+    {
+        for (const Vertex& vertex : blockFace.GetVertices())
+        {
+            blockFaceVertices.push_back(vertex);
+        }
+    }
 
-    vbo->SetData(vertices.data(), vertices.size() * sizeof(Vertex));
-    ibo->SetData(indices.data(), indices.size());
+    std::vector<uint32_t> blockFaceIndices;
+    uint32_t maxIndex = 0;
+    for (int i = 0; i < blockFaces.size(); i++)
+    {
+        uint32_t index0 = maxIndex; maxIndex++;
+        uint32_t index1 = maxIndex; maxIndex++;
+        uint32_t index2 = maxIndex; maxIndex++;
+        uint32_t index3 = maxIndex; maxIndex++;
 
-    TextureAtlas::Get().Create();
+        blockFaceIndices.push_back(index0);
+        blockFaceIndices.push_back(index1);
+        blockFaceIndices.push_back(index2);
+        blockFaceIndices.push_back(index0);
+        blockFaceIndices.push_back(index2);
+        blockFaceIndices.push_back(index3);
+    }
+
+    std::shared_ptr<VertexBuffer> vbo = std::make_shared<VertexBuffer>(blockFaceVertices.size() * sizeof(Vertex));
+    std::shared_ptr<IndexBuffer> ibo = std::make_shared<IndexBuffer>(blockFaceIndices.size());
+
+    vbo->SetData(blockFaceVertices.data(), blockFaceVertices.size() * sizeof(Vertex));
+    ibo->SetData(blockFaceIndices.data(), blockFaceIndices.size());
 
     // vertices
     vao->push(3, GL_FLOAT, GL_FALSE);

@@ -22,6 +22,8 @@ public:
 
 	glm::ivec2 Dimensions() const;
 
+	uint32_t TextureSize() const;
+
 	const std::string& GetOpenGLUniformID() const;
 
 private:

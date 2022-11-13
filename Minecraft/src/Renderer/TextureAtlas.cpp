@@ -21,6 +21,7 @@ TextureAtlas& TextureAtlas::Get()
 
 TextureAtlas::~TextureAtlas()
 {
+	MC_CONSOLE_LOG("Texture Atlas Destroyed");
 	if (m_buffer != nullptr)
 	{
 		stbi_image_free(m_buffer);
@@ -89,4 +90,9 @@ void TextureAtlas::UnBind() const
 const std::string& TextureAtlas::GetOpenGLUniformID() const
 {
 	return m_openGLUniformID;
+}
+
+uint32_t TextureAtlas::TextureSize() const
+{
+	return m_dimensions.x / 3.0f;
 }
