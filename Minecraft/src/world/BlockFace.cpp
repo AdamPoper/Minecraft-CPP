@@ -1,24 +1,28 @@
 #include "BlockFace.h"
 
-
 std::array<glm::vec3, 8> BlockFace::s_positions = {
-       glm::vec3(-0.5f,  0.5f,  0.5f), // 0
-       glm::vec3( 0.5f,  0.5f,  0.5f), // 1
-       glm::vec3( 0.5f, -0.5f,  0.5f), // 2
-       glm::vec3(-0.5f, -0.5f,  0.5f), // 3
-       glm::vec3(-0.5f,  0.5f, -0.5f), // 4
-       glm::vec3( 0.5f,  0.5f, -0.5f), // 5
-       glm::vec3( 0.5f, -0.5f, -0.5f), // 6
-       glm::vec3(-0.5f, -0.5f, -0.5f), // 7
+    glm::vec3(-0.5f,  0.5f,  0.5f), // 0
+    glm::vec3( 0.5f,  0.5f,  0.5f), // 1
+    glm::vec3( 0.5f, -0.5f,  0.5f), // 2
+    glm::vec3(-0.5f, -0.5f,  0.5f), // 3
+    glm::vec3(-0.5f,  0.5f, -0.5f), // 4
+    glm::vec3( 0.5f,  0.5f, -0.5f), // 5
+    glm::vec3( 0.5f, -0.5f, -0.5f), // 6
+    glm::vec3(-0.5f, -0.5f, -0.5f), // 7
 };
 
 
 std::array<glm::vec2, 4> BlockFace::s_texCoords = {
-        glm::vec2(0.0f, 0.0f), // 0
-        glm::vec2(0.0f, 1.0f), // 1
-        glm::vec2(1.0f, 0.0f), // 2
-        glm::vec2(1.0f, 1.0f)  // 3
+    glm::vec2(0.0f, 0.0f), // 0
+    glm::vec2(0.0f, 1.0f), // 1
+    glm::vec2(1.0f, 0.0f), // 2
+    glm::vec2(1.0f, 1.0f)  // 3
 };
+
+BlockFace::BlockFace()
+{
+    
+}
 
 BlockFace::BlockFace(Texture texture, Direction direction)
 	:m_texture(texture), m_direction(direction)
@@ -39,7 +43,7 @@ void BlockFace::InitVertexPositions()
         case Direction::TOP:    indices = { 4, 5, 1, 0 }; break;
         case Direction::BOTTOM: indices = { 3, 2, 6, 7 }; break;
         default: MC_CONSOLE_LOG("Unknown Direction");
-    }
+    }        
 
     for (int i = 0; i < 4; i++)
         m_vertices[i].position = s_positions[indices[i]];
@@ -62,6 +66,7 @@ void BlockFace::InitVertexTextureCoords()
         case Texture::DIRT_GRASS:     x = 2.0f; y = 2.0f; break;
         case Texture::COBBLE_STONE:   x = 0.0f; y = 0.0f; break;
         case Texture::GLASS:          x = 2.0f; y = 0.0f; break;
+        default: MC_CONSOLE_LOG("Unknown Block Face Type");
     }
 
     m_vertices[0].texCoords.x = (x * texSize) / atlasDimensions.x;
@@ -77,4 +82,27 @@ void BlockFace::InitVertexTextureCoords()
 const std::array<Vertex, 4>& BlockFace::GetVertices() const
 {
     return m_vertices;
+}
+
+Texture BlockFace::GetTexture() const
+{
+    return m_texture;
+}
+
+void BlockFace::ChangeTexture(Texture texture)
+{
+    m_texture = texture;
+    InitVertexTextureCoords();
+}
+
+void BlockFace::SetDirection(Direction direction)
+{
+    m_direction = direction;
+    InitVertexPositions();
+}
+
+void BlockFace::Translate(glm::vec3 transform)
+{
+    for (Vertex& vertex : m_vertices)
+        vertex.position += transform;                
 }

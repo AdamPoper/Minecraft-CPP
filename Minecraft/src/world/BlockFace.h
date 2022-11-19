@@ -16,8 +16,7 @@ enum class Texture
 	STONE,
 	COBBLE_STONE,
 	SAND,
-	GLASS,
-	AIR
+	GLASS
 };
 
 enum class Direction
@@ -32,14 +31,27 @@ enum class Direction
 
 class BlockFace 
 {
+public:
+
+	static const uint32_t s_countBlockFaceVertices = 4;
 
 public:
 
-	BlockFace() = default;
+	BlockFace();
 
 	BlockFace(Texture texture, Direction direction);
 
-	const std::array<Vertex, 4>& GetVertices() const;	
+	const std::array<Vertex, 4>& GetVertices() const;
+
+	void ChangeTexture(Texture texture);
+
+	void SetDirection(Direction direction);
+
+	void Translate(glm::vec3 transform);
+
+	Texture GetTexture() const;
+
+
 
 private:
 

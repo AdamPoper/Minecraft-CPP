@@ -28,6 +28,16 @@ struct Vertex
 		return *this;
 	}
 
+	Vertex& operator=(const Vertex& v)
+	{
+		if (this != &v)
+		{
+			position = v.position;
+			texCoords = v.texCoords;
+		}
+		return *this;
+	}
+
 	glm::vec3 position;
 	glm::vec2 texCoords;
 };
