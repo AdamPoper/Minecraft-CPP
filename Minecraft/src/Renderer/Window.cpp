@@ -24,13 +24,13 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	win->GetCamera().adjustFov(yoffset);
 }
 
-bool Window::isMouseButtonPressed(uint32_t buttCode)
+bool Window::IsMouseButtonPressed(uint32_t buttCode)
 {
 	if (buttCode > MAX_MOUSE_BUTTONS)
 		return false;
 	return s_mouseButtons[buttCode];
 }
-bool Window::isKeyPressed(uint32_t keycode)
+bool Window::IsKeyPressed(uint32_t keycode)
 {
 	if (keycode > MAX_KEYS)
 		return false;
@@ -53,8 +53,6 @@ Window::Window(uint32_t width, uint32_t height, const std::string& title)
 		glfwSetCursorPosCallback(m_window, cursor_position_callback);
 		glfwSetScrollCallback(m_window, scroll_callback);
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		//glEnable(GL_DEPTH_TEST);
-		//glViewport(0, 0, width, height);
 	}
 }
 Window::~Window()

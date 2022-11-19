@@ -18,9 +18,9 @@ public:
 
 	void OnUpdate();
 
-	static bool isKeyPressed(uint32_t keycode);
+	static bool IsKeyPressed(uint32_t keycode);
 
-	static bool isMouseButtonPressed(uint32_t buttCode);
+	static bool IsMouseButtonPressed(uint32_t buttCode);
 
 	Camera& GetCamera() { return m_camera; }
 

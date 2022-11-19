@@ -23,7 +23,7 @@ void Renderer::OnRendererInit()
     }
 
     glEnable(GL_DEPTH_TEST);
-    glViewport(0, 0, 800, 800);
+    glViewport(0, 0, m_defaultWindowWidth, m_defaultWindowHeight);
 
     TextureAtlas::Get().Create();
     m_vertexArray = std::make_shared<VertexArray>();
@@ -44,15 +44,14 @@ void Renderer::OnRendererInit()
 
 void Renderer::OnRendererUpdate()
 {
-    TextureAtlas::Get().Bind();
-    m_shaderProgram->SetUniform1i(TextureAtlas::Get().GetOpenGLUniformID(), 0);
-    
     m_window->GetCamera().onUpdate();
 
+    m_shaderProgram->SetUniform1i(TextureAtlas::Get().GetOpenGLUniformID(), 0);
     m_shaderProgram->SetUniformMat4("u_projection", m_window->GetCamera().getProjection());
     m_shaderProgram->SetUniformMat4("u_view", m_window->GetCamera().getView());
-    m_shaderProgram->SetUniformMat4("u_model", m_model);
+    m_shaderProgram->SetUniformMat4("u_model", glm::mat4(1.0f));
 
+    TextureAtlas::Get().Bind();
     m_shaderProgram->Bind();
     m_vertexArray->Bind();
     m_indexBuffer->Bind();

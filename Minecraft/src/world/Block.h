@@ -29,7 +29,11 @@ public:
 
 	Block(BlockType blockType);
 
+	Block(BlockType blockType, glm::vec3 position);
+
 	Block(const Block& block);
+
+	Block(Block&& block) noexcept;
 
 	const std::array<const Vertex*, s_vertexCount>& GetVertices() const;
 

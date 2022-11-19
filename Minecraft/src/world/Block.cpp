@@ -1,19 +1,31 @@
 #include "Block.h"
 
-Block::Block()
-	: m_blockType(BlockType::AIR), m_position()
+Block::Block() :
+	m_blockType(BlockType::AIR),
+	m_position()
 {
 	InitBlockFaceDirections();
 	InitBlockFaceTextures();
 	SetBlockFaceVertices();
 }
 
-Block::Block(BlockType blockType)
-	: m_blockType(blockType), m_position()
+Block::Block(BlockType blockType) :
+	m_blockType(blockType),
+	m_position()
 {
 	InitBlockFaceDirections();
 	InitBlockFaceTextures();
 	SetBlockFaceVertices();
+}
+
+Block::Block(BlockType blockType, glm::vec3 position) :
+	m_blockType(blockType),
+	m_position(position)
+{
+	InitBlockFaceDirections();
+	InitBlockFaceTextures();
+	SetBlockFaceVertices();
+	SetPosition(m_position);
 }
 
 Block::Block(const Block& block)
@@ -21,6 +33,14 @@ Block::Block(const Block& block)
 	InitBlockFaceDirections();
 	SetPosition(block.GetPosition());
 	SetBlockType(block.GetBlockType());
+	SetBlockFaceVertices();
+}
+
+Block::Block(Block&& block) noexcept :
+	m_blockFaces(std::move(block.m_blockFaces)),
+	m_position(std::move(block.m_position))
+{
+	SetBlockType(block.m_blockType);
 	SetBlockFaceVertices();
 }
 
