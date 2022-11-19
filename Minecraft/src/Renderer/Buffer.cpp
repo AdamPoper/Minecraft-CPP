@@ -1,23 +1,32 @@
 #include "Buffer.h"
 
-uint32_t Buffer::GetRenderID() const
+VertexBuffer::VertexBuffer()
+	:m_capacity(s_defaultCapacity), m_size(0)
 {
-	return m_renderID;
+	glGenBuffers(1, &m_renderID);
+	Bind();
+	glBufferData(GL_ARRAY_BUFFER, m_capacity, nullptr, GL_DYNAMIC_DRAW);
 }
 
 VertexBuffer::VertexBuffer(Vertex* data, std::size_t size)
-	: m_size(size)
+	: m_size(size), m_capacity(size)
 {	
 	glGenBuffers(1, &m_renderID);
 	Bind();
 	glBufferData(GL_ARRAY_BUFFER, size, (const void*)data, GL_STATIC_DRAW);
 }
 
-VertexBuffer::VertexBuffer(std::size_t size)
+VertexBuffer::VertexBuffer(std::size_t capacity)
+	:m_size(0), m_capacity(capacity)
 {
 	glGenBuffers(1, &m_renderID);
 	Bind();
-	glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_capacity, nullptr, GL_DYNAMIC_DRAW);
+}
+
+uint32_t Buffer::GetRenderID() const
+{
+	return m_renderID;
 }
 
 void VertexBuffer::Bind()
@@ -38,14 +47,21 @@ std::size_t VertexBuffer::GetCount() const
 
 void VertexBuffer::SetData(Vertex* data, std::size_t size)
 {
-	m_size = size;
+	// TODO: add checking for capacity limits
 	Bind();
-	glBufferSubData(GL_ARRAY_BUFFER, 0, size, (const void*)data);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * size, (const void*)data);
 }
 
 /*
 		Index Buffer
 */
+
+IndexBuffer::IndexBuffer()
+{
+	glGenBuffers(1, &m_renderID);
+	Bind();
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, s_defaultSize, nullptr, GL_DYNAMIC_DRAW);
+}
 
 IndexBuffer::IndexBuffer(uint32_t* data, uint32_t count)
 	:m_count(count)

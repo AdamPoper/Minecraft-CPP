@@ -14,7 +14,7 @@ public:
 
 	~Window();
 
-	bool isOpen();
+	bool IsOpen();
 
 	void OnUpdate();
 
@@ -22,7 +22,7 @@ public:
 
 	static bool isMouseButtonPressed(uint32_t buttCode);
 
-	Camera& getCamera() { return m_camera; }
+	Camera& GetCamera() { return m_camera; }
 
 private:
 

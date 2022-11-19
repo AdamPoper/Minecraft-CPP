@@ -8,6 +8,11 @@ Camera::Camera(float w, float h)
 	m_projection = glm::perspective(glm::radians(m_fov), m_windowWidth / m_windowHeight, 0.1f, 100.0f);
 }
 
+Camera::Camera(const Camera& cam)
+{
+
+}
+
 void Camera::translate(const glm::vec3& vec)
 {
 	m_view = glm::translate(m_view, vec);

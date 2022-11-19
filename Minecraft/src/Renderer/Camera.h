@@ -10,7 +10,7 @@ class Camera
 public:
 	Camera(float w, float h);
 
-	Camera(const Camera&) = delete;
+	Camera(const Camera&);
 
 	void translate(const glm::vec3& vec);
 

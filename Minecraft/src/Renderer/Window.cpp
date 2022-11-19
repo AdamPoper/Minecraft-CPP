@@ -16,12 +16,12 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	win->getCamera().onCameraMouseMove(xpos, ypos);
+	win->GetCamera().onCameraMouseMove(xpos, ypos);
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	win->getCamera().adjustFov(yoffset);
+	win->GetCamera().adjustFov(yoffset);
 }
 
 bool Window::isMouseButtonPressed(uint32_t buttCode)
@@ -53,6 +53,8 @@ Window::Window(uint32_t width, uint32_t height, const std::string& title)
 		glfwSetCursorPosCallback(m_window, cursor_position_callback);
 		glfwSetScrollCallback(m_window, scroll_callback);
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		//glEnable(GL_DEPTH_TEST);
+		//glViewport(0, 0, width, height);
 	}
 }
 Window::~Window()
@@ -60,7 +62,7 @@ Window::~Window()
 	glfwTerminate();
 }
 
-bool Window::isOpen()
+bool Window::IsOpen()
 {
 	return !glfwWindowShouldClose(m_window);
 }

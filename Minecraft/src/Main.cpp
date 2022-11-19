@@ -12,29 +12,32 @@
 #include "Renderer/TextureAtlas.h"
 #include "world/BlockFace.h"
 #include "world/Block.h"
+#include "Renderer/Renderer.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 800
 
 int main()
 {
-    Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Minecraft");
+    //Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Minecraft");
 
-    if (glewInit() == GLEW_OK)
-    {
-        MC_CONSOLE_LOG("Glew Works");
-    }
-    else
-    {
-        MC_CONSOLE_LOG("Glew Does Not Work");
-    }
+    // if (glewInit() == GLEW_OK)
+    // {
+    //     MC_CONSOLE_LOG("Glew Works");
+    // }
+    // else
+    // {
+    //     MC_CONSOLE_LOG("Glew Does Not Work");
+    // }
 
-    glEnable(GL_DEPTH_TEST);
-    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    // glEnable(GL_DEPTH_TEST);
+    // glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    // 
+    // glm::mat4 model(1.0f);
+    // 
+    // TextureAtlas::Get().Create();
 
-    glm::mat4 model(1.0f);
-
-    TextureAtlas::Get().Create();
+    Renderer::OnInit();
 
     std::array<Block, 2> blocks;
     blocks[0].SetBlockType(BlockType::STONE);
@@ -44,8 +47,6 @@ int main()
 
     blocks[1].SetBlockType(BlockType::DIRT);
     blocks[1].SetPosition(glm::vec3(3.0f, -2.0f, -5.5f));
-
-    uint32_t index = 0;
 
     std::vector<Vertex> allBlockVertices;
     for (Block& block : blocks)
@@ -73,70 +74,78 @@ int main()
         blockFaceIndices.push_back(index3);
     }
 
-    std::shared_ptr<VertexArray> vao = std::make_shared<VertexArray>();
+    Renderer::SetVertexData(allBlockVertices.data(), allBlockVertices.size());
+    Renderer::SetIndexData(blockFaceIndices.data(), blockFaceIndices.size());
 
-    std::shared_ptr<VertexBuffer> vbo = std::make_shared<VertexBuffer>(allBlockVertices.size() * sizeof(Vertex));
-    std::shared_ptr<IndexBuffer> ibo = std::make_shared<IndexBuffer>(blockFaceIndices.size());
+    // std::shared_ptr<VertexArray> vao = std::make_shared<VertexArray>();
+    // 
+    // std::shared_ptr<VertexBuffer> vbo = std::make_shared<VertexBuffer>(allBlockVertices.size() * sizeof(Vertex));
+    // std::shared_ptr<IndexBuffer> ibo = std::make_shared<IndexBuffer>(blockFaceIndices.size());
 
-    vbo->SetData(allBlockVertices.data(), allBlockVertices.size() * sizeof(Vertex));
-    ibo->SetData(blockFaceIndices.data(), blockFaceIndices.size());
-
-    // vertices
-    vao->push(3, GL_FLOAT, GL_FALSE);
-
-    // texture coordinates
-    vao->push(2, GL_FLOAT, GL_FALSE);
-
-    ShaderProgram shaderProgram;
-    std::shared_ptr<Shader> vs = Shader::CreateShader<VertexShader>();
-    std::shared_ptr<Shader> fs = Shader::CreateShader<FragmentShader>();
-
-    shaderProgram.AttachShader(vs);
-    shaderProgram.AttachShader(fs);
-    shaderProgram.CreateShaderProgram();
+    // vbo->SetData(allBlockVertices.data(), allBlockVertices.size() * sizeof(Vertex));
+    // ibo->SetData(blockFaceIndices.data(), blockFaceIndices.size());
+    // 
+    // // vertices
+    // vao->push(3, GL_FLOAT, GL_FALSE);
+    // 
+    // // texture coordinates
+    // vao->push(2, GL_FLOAT, GL_FALSE);
+    // 
+    // ShaderProgram shaderProgram;
+    // std::shared_ptr<Shader> vs = Shader::CreateShader<VertexShader>();
+    // std::shared_ptr<Shader> fs = Shader::CreateShader<FragmentShader>();
+    // 
+    // shaderProgram.AttachShader(vs);
+    // shaderProgram.AttachShader(fs);
+    // shaderProgram.CreateShaderProgram();
 
     float speed = 5.0f;
 
     TimeStep ts;
 
-    while (window.isOpen())
+    Window& window = *Renderer::GetWindow();
+
+    while (window.IsOpen())
     {
         ts.stop();
         ts.start();
 
         if (Window::isKeyPressed(KEY_W))
-            window.getCamera().moveForward(ts);
+            window.GetCamera().moveForward(ts);
         if (Window::isKeyPressed(KEY_S))
-            window.getCamera().moveBackward(ts);
+            window.GetCamera().moveBackward(ts);
         if (Window::isKeyPressed(KEY_A))
-            window.getCamera().strafeLeft(ts);
+            window.GetCamera().strafeLeft(ts);
         if (Window::isKeyPressed(KEY_D))
-            window.getCamera().strafeRight(ts);
+            window.GetCamera().strafeRight(ts);
 
-        TextureAtlas::Get().Bind();
-        shaderProgram.SetUniform1i(TextureAtlas::Get().GetOpenGLUniformID(), 0);
+        Renderer::OnUpdate();
 
-        window.getCamera().onUpdate();
+        // TextureAtlas::Get().Bind();
+        // shaderProgram.SetUniform1i(TextureAtlas::Get().GetOpenGLUniformID(), 0);
+        // 
+        // window.getCamera().onUpdate();
+        // 
+        // shaderProgram.SetUniformMat4("u_projection", window.getCamera().getProjection());
+        // shaderProgram.SetUniformMat4("u_view", window.getCamera().getView());
+        // shaderProgram.SetUniformMat4("u_model", glm::mat4(1.0f));
+        // 
+        // shaderProgram.Bind();
+        // vao->Bind();
+        // ibo->Bind();
+        // 
+        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // glClearColor(0.3f, 0.5f, 0.9f, 1.0f);
+        // 
+        // glDrawElements(GL_TRIANGLES, ibo->GetCount(), GL_UNSIGNED_INT, nullptr);
+        // 
+        // uint32_t error = glGetError();
+        // if (error)
+        // {
+        //     MC_CONSOLE_LOG_ERROR(error);
+        // }
+        // 
+        // window.OnUpdate();
 
-        shaderProgram.SetUniformMat4("u_projection", window.getCamera().getProjection());
-        shaderProgram.SetUniformMat4("u_view", window.getCamera().getView());
-        shaderProgram.SetUniformMat4("u_model", model);
-
-        shaderProgram.Bind();
-        vao->Bind();
-        ibo->Bind();
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.3f, 0.5f, 0.9f, 1.0f);
-
-        glDrawElements(GL_TRIANGLES, ibo->GetCount(), GL_UNSIGNED_INT, nullptr);
-        
-        uint32_t error = glGetError();
-        if (error)
-        {
-            MC_CONSOLE_LOG_ERROR(error);
-        }
-
-        window.OnUpdate();
     }
 }
