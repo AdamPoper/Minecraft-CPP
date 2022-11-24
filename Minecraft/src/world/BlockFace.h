@@ -6,68 +6,71 @@
 #include "../Logger/Logger.h"
 #include "../Renderer/TextureAtlas.h"
 
-enum class Texture
+namespace Mc
 {
-	GRASS,
-	DIRT,
-	DIRT_GRASS,
-	WOOD_OAK,
-	WOOD_OAK_PLANK,
-	STONE,
-	COBBLE_STONE,
-	SAND,
-	GLASS
-};
+	enum class Texture
+	{
+		GRASS,
+		DIRT,
+		DIRT_GRASS,
+		WOOD_OAK,
+		WOOD_OAK_PLANK,
+		STONE,
+		COBBLE_STONE,
+		SAND,
+		GLASS
+	};
 
-enum class Direction
-{
-	FRONT,
-	BACK,
-	RIGHT,
-	LEFT,
-	TOP,
-	BOTTOM
-};
+	enum class Direction
+	{
+		FRONT,
+		BACK,
+		RIGHT,
+		LEFT,
+		TOP,
+		BOTTOM
+	};
 
-class BlockFace 
-{
-public:
+	class BlockFace 
+	{
+	public:
 
-	static const uint32_t s_countBlockFaceVertices = 4;
+		static const uint32_t s_countBlockFaceVertices = 4;
 
-public:
+	public:
 
-	BlockFace();
+		BlockFace() = default;
 
-	BlockFace(Texture texture, Direction direction);
+		BlockFace(Texture texture, Direction direction);
 
-	const std::array<Vertex, 4>& GetVertices() const;
+		const std::array<Vertex, 4>& GetVertices() const;
 
-	void ChangeTexture(Texture texture);
+		void ChangeTexture(Texture texture);
 
-	void SetDirection(Direction direction);
+		void SetDirection(Direction direction);
 
-	void Translate(glm::vec3 transform);
+		void Translate(glm::vec3 transform);
 
-	Texture GetTexture() const;
+		Texture GetTexture() const;
 
 
 
-private:
+	private:
 
-	void InitVertexPositions();
+		void InitVertexPositions();
 
-	void InitVertexTextureCoords();
+		void InitVertexTextureCoords();
 
-private:
+	private:
 
-	static std::array<glm::vec3, 8> s_positions;
+		static std::array<glm::vec3, 8> s_positions;
 
-	static std::array<glm::vec2, 4> s_texCoords;
+		static std::array<glm::vec2, 4> s_texCoords;
 
-private:
+	private:
 
-	std::array<Vertex, 4> m_vertices;
-	Texture m_texture;
-	Direction m_direction;
-};
+		std::array<Vertex, 4> m_vertices;
+		Texture m_texture;
+		Direction m_direction;
+	};
+}

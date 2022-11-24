@@ -17,32 +17,15 @@
 
 int main()
 {
+    Renderer::SetTextureAtlasFilePath("res/textures/atlas.png", 3, 3);
     Renderer::OnInit();
 
-    World::OnInit();
+    Mc::World::OnInit();
 
-    // std::array<Block, 2> blocks;
-    // blocks[0].SetBlockType(BlockType::STONE);
-    // blocks[0].SetPosition(glm::vec3(-2.0f, 2.0f, -2.0f));
-    // blocks[0].Translate(glm::vec3(1.0f, 0.0f, 1.0f));
-    // blocks[0].SetBlockType(BlockType::WOOD_OAK);
-    // 
-    // blocks[1].SetBlockType(BlockType::DIRT);
-    // blocks[1].SetPosition(glm::vec3(3.0f, -2.0f, -5.5f));
-
-    // std::vector<Block> blocks;
-    // 
-    // Block block;
-    // block.SetBlockType(BlockType::COBBLE_STONE);
-    // block.SetPosition(glm::vec3(1.0f, 1.0f, 1.0f));
-    // blocks.emplace_back(std::move(block));
-    // blocks[0].SetPosition(glm::vec3(2.0f, 3.0f, -2.0f));
-    // blocks[0].SetBlockType(BlockType::DIRT);
-
-    const std::vector<Block>& blocks = World::GetBlocks();
+    const std::vector<Mc::Block>& blocks = Mc::World::GetBlocks();
 
     std::vector<Vertex> allBlockVertices;
-    for (const Block& block : blocks)
+    for (const Mc::Block& block : blocks)
     {
         for (const Vertex* vertex : block.GetVertices())
         {
@@ -52,7 +35,7 @@ int main()
 
     std::vector<uint32_t> blockFaceIndices;
     uint32_t maxIndex = 0;
-    for (int i = 0; i < blocks.size() * Block::s_blockFacesCount; i++)
+    for (int i = 0; i < blocks.size() * Mc::Block::s_blockFacesCount; i++)
     {
         uint32_t index0 = maxIndex; maxIndex++;
         uint32_t index1 = maxIndex; maxIndex++;

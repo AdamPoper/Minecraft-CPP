@@ -4,34 +4,37 @@
 
 #include "Block.h"
 
-class World
+namespace Mc
 {
-public:
+	class World
+	{
+	public:
 
-	static World& Get();
+		static World& Get();
 
-	static void OnInit();
+		static void OnInit();
 
-	static const std::vector<Block>& GetBlocks();
+		static const std::vector<Block>& GetBlocks();
 
-private:
+	private:
 
-	World();
+		World();
 
-	World(const World&) = delete;
+		World(const World&) = delete;
 
-private:
+	private:
 
-	void OnWorldInit();
+		void OnWorldInit();
 
-	const std::vector<Block>& GetWorldBlocks() const;
+		const std::vector<Block>& GetWorldBlocks() const;
 
-private:
+	private:
 
-	static World s_instance;
+		static World s_instance;
 
-private:
+	private:
 
-	// temporary
-	std::vector<Block> m_blocks;
-};
+		// temporary
+		std::vector<Block> m_blocks;
+	};
+}

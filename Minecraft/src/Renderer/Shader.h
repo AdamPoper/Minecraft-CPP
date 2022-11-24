@@ -5,6 +5,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include "../Util/Ref.h"
 #include "../Logger/Logger.h"
 #include "../glm/glm.hpp"
 
@@ -15,12 +16,12 @@ public:
 	Shader();
 
 	template<typename T>
-	static std::shared_ptr<T> CreateShader()
+	static Scope<T> CreateShader()
 	{
 		typedef T ShaderType;
 		if (std::is_base_of<Shader, ShaderType>::value)
 		{
-			std::shared_ptr<ShaderType> shader = std::make_shared<ShaderType>();
+			Scope<ShaderType> shader = CreateScope<ShaderType>();
 			shader->LoadShader();
 			shader->CompileShader();
 			return shader;
@@ -28,7 +29,7 @@ public:
 		else
 		{
 			MC_CONSOLE_LOG("Invalid Shader Type");
-			return std::make_shared<T>();
+			return CreateScope<T>();
 		}
 	}
 
@@ -58,7 +59,7 @@ public:
 
 	ShaderProgram();
 
-	void AttachShader(std::shared_ptr<Shader>& shader);
+	void AttachShader(Scope<Shader>& shader);
 
 	void Bind() const;
 
@@ -75,7 +76,7 @@ private:
 	void DeleteShaders();
 
 private:
-	std::vector<std::shared_ptr<Shader>> m_shaders;
+	std::vector<Scope<Shader>> m_shaders;
 	uint32_t m_renderID;
 };
 

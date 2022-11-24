@@ -1,22 +1,18 @@
 #include "TextureAtlas.h"
 
-TextureAtlas TextureAtlas::s_textureAtlas;
-uint32_t TextureAtlas::s_referenceCounter = 0;
+TextureAtlas TextureAtlas::s_textureAtlasInstance;
 
-TextureAtlas::TextureAtlas()
-	: m_filePath("res/textures/atlas.png"), m_openGLUniformID("u_Texture"),
-	m_buffer(nullptr), m_dimensions(glm::vec2()), m_bpp(0), m_renderID(0)
+TextureAtlas::TextureAtlas() :
+	m_openGLUniformID("u_Texture"),
+	m_countTexturesWidth(0),
+	m_countTexturesHeight(0)
 {
-	s_referenceCounter++;
-	if (s_referenceCounter > 1)
-	{
-		MC_CONSOLE_LOG("No more than 1 texture atlas allowed");
-	}
+
 }
 
-TextureAtlas& TextureAtlas::Get()
+const TextureAtlas& TextureAtlas::Get()
 {
-	return s_textureAtlas;
+	return s_textureAtlasInstance;
 }
 
 TextureAtlas::~TextureAtlas()
@@ -28,8 +24,12 @@ TextureAtlas::~TextureAtlas()
 	}
 }
 
-void TextureAtlas::Create()
+void TextureAtlas::CreateTextureAtlas(const std::string& filepath, uint32_t countTexturesWidth, uint32_t countTexturesHeight)
 {
+	m_countTexturesWidth = countTexturesWidth;
+	m_countTexturesHeight = countTexturesHeight;
+	m_filePath = filepath;
+
 	LoadTextureFromFile();
 	if (m_buffer)
 	{
@@ -76,23 +76,66 @@ glm::ivec2 TextureAtlas::Dimensions() const
 	return m_dimensions;
 }
 
-void TextureAtlas::Bind() const
+void TextureAtlas::BindTextureAtlas() const
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_renderID);
 }
 
-void TextureAtlas::UnBind() const
+void TextureAtlas::UnBindTextureAtlas() const
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-const std::string& TextureAtlas::GetOpenGLUniformID() const
+const std::string& TextureAtlas::OpenGLUniformID() const
 {
 	return m_openGLUniformID;
 }
 
-uint32_t TextureAtlas::TextureSize() const
+uint32_t TextureAtlas::TextureWidth() const
 {
-	return m_dimensions.x / 3.0f;
+	return m_dimensions.x / m_countTexturesWidth;
+}
+
+uint32_t TextureAtlas::TextureHeight() const
+{
+	return m_dimensions.y / m_countTexturesHeight;
+}
+
+/*
+	Instance Methods
+*/
+
+void TextureAtlas::Create(const std::string& filepath, uint32_t countTexturesWidth, uint32_t countTextureHeight)
+{
+	s_textureAtlasInstance.CreateTextureAtlas(filepath, countTexturesWidth, countTextureHeight);
+}
+
+void TextureAtlas::Bind()
+{
+	s_textureAtlasInstance.BindTextureAtlas();
+}
+
+void TextureAtlas::UnBind()
+{
+	s_textureAtlasInstance.UnBindTextureAtlas();
+}
+
+glm::vec2 TextureAtlas::GetDimensions()
+{
+	return s_textureAtlasInstance.Dimensions();
+}
+
+uint32_t TextureAtlas::GetTextureWidth()
+{
+	return s_textureAtlasInstance.TextureWidth();
+}
+
+uint32_t TextureAtlas::GetTextureHeight()
+{
+	return s_textureAtlasInstance.TextureHeight();
+}
+const std::string& TextureAtlas::GetOpenGLUniformID()
+{
+	return s_textureAtlasInstance.OpenGLUniformID();
 }

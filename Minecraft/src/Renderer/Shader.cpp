@@ -78,14 +78,14 @@ ShaderProgram::ShaderProgram()
 	m_renderID = glCreateProgram();
 }
 
-void ShaderProgram::AttachShader(std::shared_ptr<Shader>& shader)
+void ShaderProgram::AttachShader(Scope<Shader>& shader)
 {
-	m_shaders.push_back(shader);
+	m_shaders.push_back(std::move(shader));
 }
 
 void ShaderProgram::CreateShaderProgram()
 {
-	for (std::shared_ptr<Shader> shader : m_shaders)
+	for (const Scope<Shader>& shader : m_shaders)
 		glAttachShader(m_renderID, shader->GetRenderID());
 	glValidateProgram(m_renderID);
 	glLinkProgram(m_renderID);
@@ -114,7 +114,7 @@ void ShaderProgram::UnBind() const
 
 void ShaderProgram::DeleteShaders()
 {
-	for (std::shared_ptr<Shader> shader : m_shaders)
+	for (Scope<Shader>& shader : m_shaders)
 		glDeleteShader(shader->GetRenderID());
 }
 

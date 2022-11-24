@@ -1,41 +1,44 @@
 #include "World.h"
 
-World World::s_instance;
-
-World::World()
+namespace Mc
 {
-	m_blocks.reserve(25);
-}
+	World World::s_instance;
 
-void World::OnWorldInit()
-{
-	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-	for (int x = 0; x < 5; x++)
+	World::World()
 	{
-		for (int z = 0; z < 5; z++)
-		{
-			position.z = z;
-			m_blocks.emplace_back(BlockType::DIRT, position);
-		}
-		position.x = x;
+		m_blocks.reserve(25);
 	}
-}
 
-const std::vector<Block>& World::GetWorldBlocks() const
-{
-	return m_blocks;
-}
+	void World::OnWorldInit()
+	{
+		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+		for (int x = 0; x < 5; x++)
+		{
+			for (int z = 0; z < 5; z++)
+			{
+				position.z = z;
+				m_blocks.emplace_back(BlockType::DIRT, position);
+			}
+			position.x = x;
+		}
+	}
 
-/*
-	Instance methods
-*/
+	const std::vector<Block>& World::GetWorldBlocks() const
+	{
+		return m_blocks;
+	}
 
-void World::OnInit()
-{
-	s_instance.OnWorldInit();
-}
+	/*
+		Instance methods
+	*/
 
-const std::vector<Block>& World::GetBlocks()
-{
-	return s_instance.GetWorldBlocks();
+	void World::OnInit()
+	{
+		s_instance.OnWorldInit();
+	}
+
+	const std::vector<Block>& World::GetBlocks()
+	{
+		return s_instance.GetWorldBlocks();
+	}
 }

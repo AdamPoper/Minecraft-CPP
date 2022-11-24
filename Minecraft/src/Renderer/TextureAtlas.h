@@ -12,19 +12,21 @@ class TextureAtlas
 {
 public:
 
-	static TextureAtlas& Get();
+	static void Create(const std::string& filepath, uint32_t countTexturesWidth, uint32_t countTexturesHeight);
 
-	void Create();
+	static const TextureAtlas& Get();
 
-	void Bind() const;
+	static void Bind();
 
-	void UnBind() const;
+	static void UnBind();
 
-	glm::ivec2 Dimensions() const;
+	static glm::vec2 GetDimensions();
 
-	uint32_t TextureSize() const;
+	static uint32_t GetTextureWidth();
 
-	const std::string& GetOpenGLUniformID() const;
+	static uint32_t GetTextureHeight();
+
+	static const std::string& GetOpenGLUniformID();
 
 private:
 
@@ -34,15 +36,29 @@ private:
 
 	TextureAtlas(const TextureAtlas&) = delete;
 
+	void CreateTextureAtlas(const std::string& filepath, uint32_t countTexturesWidth, uint32_t countTexturesHeight);
+
+	void BindTextureAtlas() const;
+
+	void UnBindTextureAtlas() const;
+
 	void LoadTextureFromFile();
 
 	void GenTexture();
 
+	glm::ivec2 Dimensions() const;
+
+	uint32_t TextureWidth() const;
+
+	uint32_t TextureHeight() const;
+
+	const std::string& OpenGLUniformID() const;
+
 private:
 
-	static TextureAtlas s_textureAtlas;
+	static TextureAtlas s_textureAtlasInstance;
 
-	const std::string m_filePath;
+	std::string m_filePath;
 
 	const std::string m_openGLUniformID;
 
@@ -54,5 +70,7 @@ private:
 
 	glm::ivec2 m_dimensions;
 
-	static uint32_t s_referenceCounter;
+	uint32_t m_countTexturesWidth;
+
+	uint32_t m_countTexturesHeight;
 };
