@@ -5,6 +5,8 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <unordered_map>
+
 #include "../Util/Ref.h"
 #include "../Logger/Logger.h"
 #include "../glm/glm.hpp"
@@ -75,8 +77,11 @@ private:
 
 	void DeleteShaders();
 
+	uint32_t GetUniformLocation(const std::string& name);
+
 private:
 	std::vector<Scope<Shader>> m_shaders;
+	std::unordered_map<std::string, uint32_t> m_uniforms;
 	uint32_t m_renderID;
 };
 

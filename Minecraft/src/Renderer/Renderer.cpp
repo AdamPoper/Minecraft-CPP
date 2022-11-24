@@ -4,10 +4,6 @@
 
 Renderer Renderer::s_instance;
 
-Renderer::Renderer()
-{
-}
-
 void Renderer::OnRendererInit()
 {
     m_window = CreateRef<Window>(m_windowWidth, m_windowHeight, "Minecraft");

@@ -31,7 +31,7 @@ public:
 
 private:
 
-	Renderer();
+	Renderer() = default;
 
 	Renderer(const Renderer&) = delete;
 

@@ -118,19 +118,37 @@ void ShaderProgram::DeleteShaders()
 		glDeleteShader(shader->GetRenderID());
 }
 
+uint32_t ShaderProgram::GetUniformLocation(const std::string& name)
+{
+	uint32_t location;
+	auto iter = m_uniforms.find(name);
+	if (iter != m_uniforms.end())
+	{
+		location = iter->second;
+	}
+	else
+	{
+		location = glGetUniformLocation(m_renderID, name.c_str());
+		if (location == GL_INVALID_INDEX)
+		{
+			MC_CONSOLE_LOG("Invalid Index");
+		}
+		else
+		{
+			m_uniforms.insert(std::pair<std::string, uint32_t>(name, location));
+		}
+	}
+	return location;
+}
+
 void ShaderProgram::SetUniformMat4(const std::string& name, const glm::mat4& matrix)
 {
-	int location = glGetUniformLocation(m_renderID, name.c_str());
+	uint32_t location = GetUniformLocation(name);
 	glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]);
 }
 
 void ShaderProgram::SetUniform1i(const std::string& name, uint32_t value)
 {
-	uint32_t loc;
-	loc = glGetUniformLocation(m_renderID, name.c_str());
-	if (loc == GL_INVALID_INDEX)
-	{
-		MC_CONSOLE_LOG("Invalid Index");
-	}
-	glUniform1i(loc, value);
+	uint32_t location = GetUniformLocation(name);
+	glUniform1i(location, value);
 }

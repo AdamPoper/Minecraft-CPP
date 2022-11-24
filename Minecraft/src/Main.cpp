@@ -18,6 +18,7 @@
 int main()
 {
     Renderer::SetTextureAtlasFilePath("res/textures/atlas.png", 3, 3);
+    Renderer::SetWindowViewDimensions(1920.0f, 1080.0f);
     Renderer::OnInit();
 
     Mc::World::OnInit();
