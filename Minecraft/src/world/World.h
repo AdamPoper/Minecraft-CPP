@@ -10,7 +10,7 @@ namespace Mc
 	{
 	public:
 
-		static World& Get();
+		static const World& Get();
 
 		static void OnInit();
 

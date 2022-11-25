@@ -28,6 +28,11 @@ namespace Mc
 		return m_blocks;
 	}
 
+	const World& World::Get()
+	{
+		return s_instance;
+	}
+
 	/*
 		Instance methods
 	*/
