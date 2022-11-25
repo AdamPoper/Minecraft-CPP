@@ -27,9 +27,9 @@ public:
 
 	VertexBuffer();
 
-	VertexBuffer(std::size_t capacity);
+	VertexBuffer(uint32_t count);
 
-	VertexBuffer(Vertex* data, std::size_t size);
+	VertexBuffer(Vertex* data, uint32_t count);
 
 	void SetData(Vertex* data, std::size_t size);
 
@@ -41,11 +41,17 @@ public:
 
 private:
 
+	void Resize(std::size_t bytes);
+
+	void Resize();
+
+private:
+
 	std::size_t m_size;
 
 	std::size_t m_capacity;
 
-	static const std::size_t s_defaultCapacity = 4800000;
+	static const std::size_t s_defaultCapacity = sizeof(Vertex) * 10000;
 };
 
 class IndexBuffer : public Buffer
@@ -67,8 +73,18 @@ public:
 	std::size_t GetCount() const;
 
 private:
+
+	void Resize();
+
+	void Resize(std::size_t count);
+
+private:
 	
 	uint32_t m_count;
 
-	static const std::size_t s_defaultSize = 1000000;
+	std::size_t m_size;
+
+	std::size_t m_capacity;
+
+	static const std::size_t s_defaultCapacity = sizeof(uint32_t) * 100;
 };
