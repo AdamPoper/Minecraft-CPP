@@ -46,7 +46,7 @@ void Renderer::OnRendererUpdate()
     m_shaderProgram->SetUniformMat4("u_view", m_window->GetCamera().getView());
     m_shaderProgram->SetUniformMat4("u_model", glm::mat4(1.0f));
 
-    TextureAtlas::Get().Bind();
+    TextureAtlas::Bind();
     m_shaderProgram->Bind();
     m_vertexArray->Bind();
     m_indexBuffer->Bind();

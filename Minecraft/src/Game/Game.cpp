@@ -12,20 +12,24 @@ void Game::OnGameInit()
 
 	Mc::World::OnInit();
 
-    const std::vector<Mc::Block>& blocks = Mc::World::GetBlocks();
+    const std::vector<Mc::Chunk>& chunks = Mc::World::GetChunks();
 
     std::vector<Vertex> allBlockVertices;
-    for (const Mc::Block& block : blocks)
+    
+    for (const Mc::Chunk& chunk : chunks)
     {
-        for (const Vertex* vertex : block.GetVertices())
+        for (const Mc::Block& block : chunk.GetBlocks())
         {
-            allBlockVertices.push_back(*vertex);
+            for (const Vertex* vertex : block.GetVertices())
+            {
+                allBlockVertices.push_back(*vertex);
+            }
         }
     }
 
     std::vector<uint32_t> blockFaceIndices;
     uint32_t maxIndex = 0;
-    for (int i = 0; i < blocks.size() * Mc::Block::s_blockFacesCount; i++)
+    for (int i = 0; i < chunks.size() * Mc::Chunk::BlocksPerChunk() * Mc::Block::s_blockFacesCount; i++)
     {
         uint32_t index0 = maxIndex; maxIndex++;
         uint32_t index1 = maxIndex; maxIndex++;
@@ -61,6 +65,19 @@ void Game::Run()
             m_windowHandle->GetCamera().strafeLeft(ts);
         if (Window::IsKeyPressed(KEY_D))
             m_windowHandle->GetCamera().strafeRight(ts);
+
+        if (!m_isPlayerSprinting && Window::IsKeyPressed(KEY_LEFT_SHIFT))
+        {
+            m_isPlayerSprinting = true;
+            m_playerSpeed *= 2.0f;
+            m_windowHandle->GetCamera().SetCameraSpeed(m_playerSpeed);
+        }
+        else if(m_isPlayerSprinting && !Window::IsKeyPressed(KEY_LEFT_SHIFT))
+        {
+            m_isPlayerSprinting = false;
+            m_playerSpeed /= 2.0f;
+            m_windowHandle->GetCamera().SetCameraSpeed(m_playerSpeed);
+        }
 
         Renderer::OnUpdate();
     }

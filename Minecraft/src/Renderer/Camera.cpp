@@ -49,6 +49,11 @@ void Camera::adjustFov(float offset)
 	m_fov -= offset;
 }
 
+void Camera::SetCameraSpeed(float speed)
+{
+	m_cameraSpeed = speed;
+}
+
 void Camera::onCameraMouseMove(double xpos, double ypos)
 {
 	if (firstMouse) // initially set to true

@@ -31,7 +31,7 @@ public:
 
 	VertexBuffer(Vertex* data, uint32_t count);
 
-	void SetData(Vertex* data, std::size_t size);
+	void SetData(Vertex* data, uint32_t count);
 
 	void Bind();
 
@@ -86,5 +86,5 @@ private:
 
 	std::size_t m_capacity;
 
-	static const std::size_t s_defaultCapacity = sizeof(uint32_t) * 100;
+	static const std::size_t s_defaultCapacity = sizeof(uint32_t) * 1000;
 };

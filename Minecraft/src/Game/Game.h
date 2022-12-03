@@ -21,12 +21,15 @@ private:
 
 	void Run();
 
+private:
+
 	static Game s_gameInstance;
 
 private:
 
 	float m_playerSpeed = 5.0f;
 
-	Ref<Window> m_windowHandle;
+	bool m_isPlayerSprinting = false;
 
+	Ref<Window> m_windowHandle;
 };

@@ -30,6 +30,8 @@ public:
 
 	void adjustFov(float offset);
 
+	void SetCameraSpeed(float speed);
+
 	float getFov() { return m_fov; }
 
 	const glm::mat4& const getProjection() { return m_projection; }

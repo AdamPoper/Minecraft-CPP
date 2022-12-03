@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Block.h"
+#include "Chunk.h"
 
 namespace Mc
 {
@@ -14,7 +14,7 @@ namespace Mc
 
 		static void OnInit();
 
-		static const std::vector<Block>& GetBlocks();
+		static const std::vector<Chunk>& GetChunks();
 
 	private:
 
@@ -22,11 +22,13 @@ namespace Mc
 
 		World(const World&) = delete;
 
-	private:
-
 		void OnWorldInit();
 
-		const std::vector<Block>& GetWorldBlocks() const;
+		const std::vector<Chunk>& GetWorldChunks() const;
+
+		uint32_t GetCountChunks() const;
+
+		void GenerateChunks(glm::vec3 relativeToWorldCenter, glm::vec3 startingPosition);
 
 	private:
 
@@ -34,7 +36,9 @@ namespace Mc
 
 	private:
 
-		// temporary
-		std::vector<Block> m_blocks;
+		std::vector<Chunk> m_chunks;
+		
+		int32_t m_worldTop = 128;
+		int32_t m_worldBottom = -127;
 	};
 }

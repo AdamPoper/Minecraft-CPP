@@ -47,10 +47,10 @@ std::size_t VertexBuffer::GetCount() const
 	return m_size;
 }
 
-void VertexBuffer::SetData(Vertex* data, std::size_t size)
+void VertexBuffer::SetData(Vertex* data, uint32_t count)
 {
 	Bind();
-	std::size_t dataSize = size * sizeof(Vertex);
+	std::size_t dataSize = count * sizeof(Vertex);
 	if (dataSize >= m_capacity)
 	{
 		Resize(dataSize);
