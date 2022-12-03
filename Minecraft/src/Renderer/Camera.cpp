@@ -54,6 +54,11 @@ void Camera::SetCameraSpeed(float speed)
 	m_cameraSpeed = speed;
 }
 
+void Camera::TranslatePosition(const glm::vec3& transform)
+{
+	m_cameraPosition += transform;
+}
+
 void Camera::onCameraMouseMove(double xpos, double ypos)
 {
 	if (firstMouse) // initially set to true

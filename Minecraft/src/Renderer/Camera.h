@@ -32,6 +32,8 @@ public:
 
 	void SetCameraSpeed(float speed);
 
+	void TranslatePosition(const glm::vec3& transform);
+
 	float getFov() { return m_fov; }
 
 	const glm::mat4& const getProjection() { return m_projection; }

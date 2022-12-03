@@ -1,8 +1,12 @@
 #pragma once
 
-#include <vector>
-
 #include "Chunk.h"
+#include "../Util/TimeStep.h"
+
+#include <vector>
+#include <future>
+#include <functional>
+
 
 namespace Mc
 {
@@ -14,7 +18,7 @@ namespace Mc
 
 		static void OnInit();
 
-		static const std::vector<Chunk>& GetChunks();
+		static const std::vector<Ref<Chunk>>& GetChunks();
 
 	private:
 
@@ -24,21 +28,33 @@ namespace Mc
 
 		void OnWorldInit();
 
-		const std::vector<Chunk>& GetWorldChunks() const;
+		const std::vector<Ref<Chunk>>& GetWorldChunks() const;
 
 		uint32_t GetCountChunks() const;
 
-		void GenerateChunks(glm::vec3 relativeToWorldCenter, glm::vec3 startingPosition);
+		void GenerateChunksAsync(
+			std::function<void(std::vector<Ref<Chunk>>*, glm::vec3)> callback,
+			glm::vec3 startingPosition,
+			glm::vec3 relativeToWorldCenter);
+
+		void GenerateChunksSync(
+			glm::vec3 startingPosition,
+			glm::vec3 relativeToWorldCenter);
 
 	private:
 
 		static World s_instance;
 
+		static std::mutex s_chunksMutex;
+
 	private:
 
-		std::vector<Chunk> m_chunks;
-		
-		int32_t m_worldTop = 128;
-		int32_t m_worldBottom = -127;
+		std::vector<Ref<Chunk>> m_chunks;
+		std::vector<std::future<void>> m_chunkFutures;
+
+		int32_t m_worldTop = 127;
+		int32_t m_worldBottom = -128;
+
+		const uint32_t m_defaultChunkRenderCount = 12;
 	};
 }

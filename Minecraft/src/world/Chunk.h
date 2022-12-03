@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Block.h"
+#include "../Util/Ref.h"
 #include <vector>
 
 namespace Mc
@@ -22,6 +23,12 @@ namespace Mc
 	public:
 
 		static const uint32_t BlocksPerChunk();
+
+		static Ref<Chunk> CreateChunk(glm::vec3 position);
+
+	private:
+
+		void Create(glm::vec3 position);
 
 	private:
 

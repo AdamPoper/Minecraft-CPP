@@ -12,7 +12,16 @@ namespace Mc
 		m_position(position)
 	{
 		m_blocks.reserve(BlocksPerChunk());
+		Create(position);
+	}
 
+	Chunk::Chunk(const Chunk& chunk)
+	{
+
+	}
+
+	void Chunk::Create(glm::vec3 position)
+	{
 		for (int x = 0; x < s_chunkWidth; x++)
 		{
 			for (int z = 0; z < s_chunkLength; z++)
@@ -30,9 +39,9 @@ namespace Mc
 		}
 	}
 
-	Chunk::Chunk(const Chunk& chunk)
+	glm::vec3 Chunk::GetPosition() const
 	{
-
+		return m_position;
 	}
 
 	const std::vector<Block>& Chunk::GetBlocks() const
@@ -40,13 +49,13 @@ namespace Mc
 		return m_blocks;
 	}
 
+	Ref<Chunk> Chunk::CreateChunk(glm::vec3 position)
+	{
+		return CreateScope<Chunk>(position);
+	}
+
 	const uint32_t Chunk::BlocksPerChunk()
 	{
 		return s_chunkHeight * s_chunkLength * s_chunkWidth;
-	}
-
-	glm::vec3 Chunk::GetPosition() const
-	{
-		return m_position;
 	}
 }

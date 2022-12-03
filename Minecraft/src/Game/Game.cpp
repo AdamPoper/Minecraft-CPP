@@ -10,15 +10,21 @@ void Game::OnGameInit()
 
     m_windowHandle = Renderer::GetWindow();
 
+    MC_PROFILE_START("World Init ASync");
 	Mc::World::OnInit();
+    MC_PROFILE_END(Profiler::TimeFrame::SECONDS);
 
-    const std::vector<Mc::Chunk>& chunks = Mc::World::GetChunks();
+    m_windowHandle->GetCamera().TranslatePosition(glm::vec3(0, 128.0f, 0));
+
+    const std::vector<Ref<Mc::Chunk>>& chunks = Mc::World::GetChunks();
 
     std::vector<Vertex> allBlockVertices;
     
-    for (const Mc::Chunk& chunk : chunks)
+    MC_PROFILE_START("Creating World Mesh");
+
+    for (const Ref<Mc::Chunk>& chunk : chunks)
     {
-        for (const Mc::Block& block : chunk.GetBlocks())
+        for (const Mc::Block& block : chunk->GetBlocks())
         {
             for (const Vertex* vertex : block.GetVertices())
             {
@@ -26,6 +32,8 @@ void Game::OnGameInit()
             }
         }
     }
+
+    MC_PROFILE_END(Profiler::TimeFrame::SECONDS);
 
     std::vector<uint32_t> blockFaceIndices;
     uint32_t maxIndex = 0;
