@@ -107,6 +107,21 @@ namespace Mc
 		return m_blockFaceVertices;
 	}
 
+	const std::vector<const Vertex*>& Block::CreateMesh()
+	{
+		for (BlockFace& blockFace : m_blockFaces)
+		{
+			if (blockFace.ShouldRender())
+			{
+				for (const Vertex& vertex : blockFace.GetVertices())
+				{
+					m_vertexMesh.push_back(&vertex);
+				}
+			}
+		}
+		return m_vertexMesh;
+	}
+
 	BlockType Block::GetBlockType() const
 	{
 		return m_blockType;
@@ -149,6 +164,13 @@ namespace Mc
 		m_blockFaces[3].SetDirection(Direction::LEFT);
 		m_blockFaces[4].SetDirection(Direction::TOP);
 		m_blockFaces[5].SetDirection(Direction::BOTTOM);
+
+		m_blockFaceDirections.insert(std::pair<Direction, BlockFace*>(Direction::FRONT,  &m_blockFaces[0]));
+		m_blockFaceDirections.insert(std::pair<Direction, BlockFace*>(Direction::BACK,   &m_blockFaces[1]));
+		m_blockFaceDirections.insert(std::pair<Direction, BlockFace*>(Direction::RIGHT,  &m_blockFaces[2]));
+		m_blockFaceDirections.insert(std::pair<Direction, BlockFace*>(Direction::LEFT,   &m_blockFaces[3]));
+		m_blockFaceDirections.insert(std::pair<Direction, BlockFace*>(Direction::TOP,    &m_blockFaces[4]));
+		m_blockFaceDirections.insert(std::pair<Direction, BlockFace*>(Direction::BOTTOM, &m_blockFaces[5]));
 	}
 
 	void Block::SetPosition(glm::vec3 position)
@@ -176,5 +198,15 @@ namespace Mc
 		m_position += transform;
 		for (BlockFace& blockFace : m_blockFaces)
 			blockFace.Translate(transform);
+	}
+
+	void Block::SetBlockFaceToRender(Direction dir)
+	{
+		auto iter = m_blockFaceDirections.find(dir);
+		if (iter != m_blockFaceDirections.end())
+		{
+			BlockFace* blockFace = iter->second;
+			blockFace->SetShouldRender(true);
+		}
 	}
 }

@@ -49,11 +49,15 @@ namespace Mc
 
 		void SetDirection(Direction direction);
 
+		Direction GetDirection() const;
+
 		void Translate(glm::vec3 transform);
 
 		Texture GetTexture() const;
 
+		void SetShouldRender(bool shouldRender);
 
+		bool ShouldRender() const;
 
 	private:
 
@@ -72,5 +76,6 @@ namespace Mc
 		std::array<Vertex, 4> m_vertices;
 		Texture m_texture;
 		Direction m_direction;
+		bool m_shouldRender = false;
 	};
 }

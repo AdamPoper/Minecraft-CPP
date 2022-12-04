@@ -39,7 +39,7 @@ namespace Mc
             case Direction::LEFT:   indices = { 4, 0, 3, 7 }; break;
             case Direction::TOP:    indices = { 4, 5, 1, 0 }; break;
             case Direction::BOTTOM: indices = { 3, 2, 6, 7 }; break;
-            default: MC_CONSOLE_LOG("Unknown Direction");
+            default: MC_CONSOLE_LOG("Unknown Blockface Direction");
         }        
 
         for (int i = 0; i < 4; i++)
@@ -63,7 +63,7 @@ namespace Mc
             case Texture::DIRT_GRASS:     x = 2.0f; y = 2.0f; break;
             case Texture::COBBLE_STONE:   x = 0.0f; y = 0.0f; break;
             case Texture::GLASS:          x = 2.0f; y = 0.0f; break;
-            default: MC_CONSOLE_LOG("Unknown Block Face Type");
+            default: MC_CONSOLE_LOG("Unknown Block Face Texture");
         }
 
         m_vertices[0].texCoords.x = (x * texSize) / atlasDimensions.x;
@@ -98,9 +98,24 @@ namespace Mc
         InitVertexPositions();
     }
 
+    Direction BlockFace::GetDirection() const
+    {
+        return m_direction;
+    }
+
     void BlockFace::Translate(glm::vec3 transform)
     {
         for (Vertex& vertex : m_vertices)
             vertex.position += transform;                
+    }
+
+    bool BlockFace::ShouldRender() const
+    {
+        return m_shouldRender;
+    }
+
+    void BlockFace::SetShouldRender(bool shouldRender)
+    {
+        m_shouldRender = shouldRender;
     }
 }

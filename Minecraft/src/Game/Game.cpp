@@ -10,11 +10,11 @@ void Game::OnGameInit()
 
     m_windowHandle = Renderer::GetWindow();
 
-    MC_PROFILE_START("World Init ASync");
+    MC_PROFILE_START("World Init");
 	Mc::World::OnInit();
     MC_PROFILE_END(Profiler::TimeFrame::SECONDS);
 
-    m_windowHandle->GetCamera().TranslatePosition(glm::vec3(0, 128.0f, 0));
+    m_windowHandle->GetCamera().TranslatePosition(glm::vec3(0, 64.0f, 0));
 
     const std::vector<Ref<Mc::Chunk>>& chunks = Mc::World::GetChunks();
 
@@ -24,9 +24,9 @@ void Game::OnGameInit()
 
     for (const Ref<Mc::Chunk>& chunk : chunks)
     {
-        for (const Mc::Block& block : chunk->GetBlocks())
+        for (Mc::Block& block : chunk->GetBlocks())
         {
-            for (const Vertex* vertex : block.GetVertices())
+            for (const Vertex* vertex : block.CreateMesh())
             {
                 allBlockVertices.push_back(*vertex);
             }
@@ -35,9 +35,11 @@ void Game::OnGameInit()
 
     MC_PROFILE_END(Profiler::TimeFrame::SECONDS);
 
+    uint32_t countBlockFaces = allBlockVertices.size() / Mc::BlockFace::s_countBlockFaceVertices;
+
     std::vector<uint32_t> blockFaceIndices;
     uint32_t maxIndex = 0;
-    for (int i = 0; i < chunks.size() * Mc::Chunk::BlocksPerChunk() * Mc::Block::s_blockFacesCount; i++)
+    for (int i = 0; i < countBlockFaces; i++)
     {
         uint32_t index0 = maxIndex; maxIndex++;
         uint32_t index1 = maxIndex; maxIndex++;

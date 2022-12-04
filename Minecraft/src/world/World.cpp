@@ -65,9 +65,9 @@ namespace Mc
 		glm::vec3 relativeToPosition
 	)
 	{
-		for (int x = 0; x < 12 / 4; x++)
+		for (int x = 0; x < 12 / 6; x++)
 		{
-			for (int z = 0; z < 12 / 4; z++)
+			for (int z = 0; z < 12 / 6; z++)
 			{
 				m_chunkFutures.push_back(std::async(std::launch::async, generateChunkCallback, &m_chunks, startingPosition));
 				startingPosition.z += static_cast<float>(Chunk::s_chunkLength * relativeToPosition.z);
@@ -79,9 +79,9 @@ namespace Mc
 
 	void World::GenerateChunksSync(glm::vec3 startingPosition, glm::vec3 relativeToPosition)
 	{
-		for (int x = 0; x < 12 / 4; x++)
+		for (int x = 0; x < 12 / 3; x++)
 		{
-			for (int z = 0; z < 12 / 4; z++)
+			for (int z = 0; z < 12 / 3; z++)
 			{
 				m_chunks.push_back(Chunk::CreateChunk(startingPosition));
 				startingPosition.z += static_cast<float>(Chunk::s_chunkLength * relativeToPosition.z);

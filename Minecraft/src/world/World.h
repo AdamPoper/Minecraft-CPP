@@ -52,8 +52,8 @@ namespace Mc
 		std::vector<Ref<Chunk>> m_chunks;
 		std::vector<std::future<void>> m_chunkFutures;
 
-		int32_t m_worldTop = 127;
-		int32_t m_worldBottom = -128;
+		int32_t m_worldTop = 64;
+		int32_t m_worldBottom = -63;
 
 		const uint32_t m_defaultChunkRenderCount = 12;
 	};

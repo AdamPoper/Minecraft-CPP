@@ -18,6 +18,8 @@ namespace Mc
 
 		const std::vector<Block>& GetBlocks() const;
 
+		std::vector<Block>& GetBlocks();
+
 		glm::vec3 GetPosition() const;
 
 	public:
@@ -30,6 +32,10 @@ namespace Mc
 
 		void Create(glm::vec3 position);
 
+		void OptimizeChunk();
+
+		void CheckNeighboringBlocks(Block& block);
+
 	private:
 
 		std::vector<Block> m_blocks;
@@ -38,7 +44,7 @@ namespace Mc
 
 	public:
 
-		static const uint32_t s_chunkHeight = 256;
+		static const uint32_t s_chunkHeight = 128;
 
 		static const uint32_t s_chunkWidth = 16;
 

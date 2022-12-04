@@ -1,6 +1,8 @@
 #pragma once
 
 #include "BlockFace.h"
+#include <map>
+#include <vector>
 
 namespace Mc
 {
@@ -39,6 +41,8 @@ namespace Mc
 
 		const std::array<const Vertex*, s_vertexCount>& GetVertices() const;
 
+		const 
+
 		const std::array<BlockFace, s_blockFacesCount>& GetBlockFaces() const;
 
 		void SetBlockType(BlockType blockType);
@@ -51,6 +55,10 @@ namespace Mc
 
 		glm::vec3 GetPosition() const;
 
+		void SetBlockFaceToRender(Direction dir);
+
+		const std::vector<const Vertex*>& CreateMesh();
+
 	private:
 
 		void InitBlockFaceTextures();
@@ -62,7 +70,9 @@ namespace Mc
 	private:
 
 		std::array<BlockFace, s_blockFacesCount> m_blockFaces;
+		std::map<Direction, BlockFace*> m_blockFaceDirections;
 		std::array<const Vertex*, s_vertexCount> m_blockFaceVertices;
+		std::vector<const Vertex*> m_vertexMesh;
 		glm::vec3 m_position;
 		BlockType m_blockType;
 	};
