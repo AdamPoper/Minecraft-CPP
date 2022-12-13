@@ -2,7 +2,22 @@
 
 #include "Block.h"
 #include "../Util/Ref.h"
+
 #include <vector>
+#include <unordered_map>
+
+struct Vec3KeyHasher
+{
+	std::size_t operator()(const glm::vec3& vec) const
+	{
+		using std::size_t;
+		using std::hash;
+
+		return ((hash<float>()(vec.x)
+			^ (hash<float>()(vec.y) << 1)) >> 1)
+			^ (hash<float>()(vec.z) << 1);
+	}
+};
 
 namespace Mc
 {
@@ -32,13 +47,21 @@ namespace Mc
 
 		void Create(glm::vec3 position);
 
-		void OptimizeChunk();
+		void OptimizeChunkBruteForce();
 
-		void CheckNeighboringBlocks(Block& block);
+		void OptimizeChunkHashing();
+
+		void CheckNeighboringBlocksBruteForce(Block& block);
+
+		void CheckNeighboringBlocksHashing(Block& block);
+
+		void CheckBlock(Block& testBlock, glm::vec3 position, bool& exists, Direction direction);
 
 	private:
 
 		std::vector<Block> m_blocks;
+
+		std::unordered_map<glm::vec3, std::vector<Block>::iterator, Vec3KeyHasher> m_blockPositions;
 
 		glm::vec3 m_position;
 

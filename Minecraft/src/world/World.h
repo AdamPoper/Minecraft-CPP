@@ -7,7 +7,6 @@
 #include <future>
 #include <functional>
 
-
 namespace Mc
 {
 	class World
@@ -55,6 +54,6 @@ namespace Mc
 		int32_t m_worldTop = 64;
 		int32_t m_worldBottom = -63;
 
-		const uint32_t m_defaultChunkRenderCount = 12;
+		const uint32_t m_defaultChunkRenderCount = 2;
 	};
 }

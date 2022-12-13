@@ -38,6 +38,8 @@ namespace Mc
 		Block(const Block& block);
 
 		Block(Block&& block) noexcept;
+			
+		bool operator<(const Block&);
 
 		const std::array<const Vertex*, s_vertexCount>& GetVertices() const;
 
@@ -70,10 +72,15 @@ namespace Mc
 	private:
 
 		std::array<BlockFace, s_blockFacesCount> m_blockFaces;
+
 		std::map<Direction, BlockFace*> m_blockFaceDirections;
+
 		std::array<const Vertex*, s_vertexCount> m_blockFaceVertices;
+
 		std::vector<const Vertex*> m_vertexMesh;
+
 		glm::vec3 m_position;
+
 		BlockType m_blockType;
 	};
 }

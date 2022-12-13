@@ -46,6 +46,8 @@ namespace Mc
 		SetBlockFaceVertices();
 	}
 
+	bool Block::operator<(const Block& block) { return true; }
+
 	void Block::InitBlockFaceTextures()
 	{
 		switch (m_blockType)

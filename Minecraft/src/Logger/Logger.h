@@ -10,10 +10,10 @@
 #define MC_PROFILE_START(x) profileStart(x)
 #define MC_PROFILE_END(x) profileEnd(x)
 #elif defined(NDEBUG)
-#define MC_CONSOLE_LOG(x)
-#define MC_CONSOLE_LOG_ERROR(x)
-#define MC_PROFILE_START(x)
-#define MC_PROFILE_END(x)
+#define MC_CONSOLE_LOG(x) consoleLog(x)
+#define MC_CONSOLE_LOG_ERROR(x) consoleLogError(x)
+#define MC_PROFILE_START(x) profileStart(x)
+#define MC_PROFILE_END(x) profileEnd(x)
 #endif
 
 class Profiler

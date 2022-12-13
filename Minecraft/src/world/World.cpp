@@ -25,23 +25,47 @@ namespace Mc
 		 
 #define ASYNC 1
 #if ASYNC
+
+		MC_PROFILE_START("Creating World");
 		
-		GenerateChunksAsync(generateChunkAsync, startingPosition, glm::vec3( 1.0f, 0.0f,  1.0f));
-		GenerateChunksAsync(generateChunkAsync, startingPosition, glm::vec3( 1.0f, 0.0f, -1.0f));
-		GenerateChunksAsync(generateChunkAsync, startingPosition, glm::vec3(-1.0f, 0.0f,  1.0f));
-		GenerateChunksAsync(generateChunkAsync, startingPosition, glm::vec3(-1.0f, 0.0f, -1.0f));
+		GenerateChunksAsync(generateChunkAsync, 
+							glm::vec3(0.0f, m_worldBottom, 0.0f), 
+							glm::vec3(1.0f, 0.0f, 1.0f));
+
+		GenerateChunksAsync(generateChunkAsync, 
+							glm::vec3(0.0f, m_worldBottom, -1.0f * Chunk::s_chunkLength),
+							glm::vec3(1.0f, 0.0f, -1.0f));
+
+		GenerateChunksAsync(generateChunkAsync, 
+							glm::vec3(-1.0f * Chunk::s_chunkWidth, m_worldBottom, 0.0f),
+							glm::vec3(-1.0f, 0.0f,  1.0f));
+
+		GenerateChunksAsync(generateChunkAsync, 
+							glm::vec3(-1.0f * Chunk::s_chunkWidth, m_worldBottom, -1.0f * Chunk::s_chunkLength),
+							glm::vec3(-1.0f, 0.0f, -1.0f));
 		
 		for (const std::future<void>& future : m_chunkFutures) future.wait();
 
+		MC_PROFILE_END(Profiler::TimeFrame::SECONDS);
 #else
 
-		GenerateChunksSync(startingPosition, glm::vec3( 1.0f, 0.0f,  1.0f));
-		GenerateChunksSync(startingPosition, glm::vec3( 1.0f, 0.0f, -1.0f));
-		GenerateChunksSync(startingPosition, glm::vec3(-1.0f, 0.0f,  1.0f));
-		GenerateChunksSync(startingPosition, glm::vec3(-1.0f, 0.0f, -1.0f));
+		GenerateChunksSync(
+			glm::vec3(0.0f, m_worldBottom, 0.0f),
+			glm::vec3(1.0f, 0.0f, 1.0f));
+
+		GenerateChunksSync(
+			glm::vec3(0.0f, m_worldBottom, -1.0f * Chunk::s_chunkLength),
+			glm::vec3(1.0f, 0.0f, -1.0f));
+
+		GenerateChunksSync(
+			glm::vec3(-1.0f * Chunk::s_chunkWidth, m_worldBottom, 0.0f),
+			glm::vec3(-1.0f, 0.0f, 1.0f));
+
+		GenerateChunksSync(
+			glm::vec3(-1.0f * Chunk::s_chunkWidth, m_worldBottom, -1.0f * Chunk::s_chunkLength),
+			glm::vec3(-1.0f, 0.0f, -1.0f));
 
 #endif
-
 	}
 
 	const std::vector<Ref<Chunk>>& World::GetWorldChunks() const
@@ -65,29 +89,31 @@ namespace Mc
 		glm::vec3 relativeToPosition
 	)
 	{
-		for (int x = 0; x < 12 / 6; x++)
+		glm::vec3 position = startingPosition;
+		for (int x = 0; x < m_defaultChunkRenderCount; x++)
 		{
-			for (int z = 0; z < 12 / 6; z++)
+			for (int z = 0; z < m_defaultChunkRenderCount; z++)
 			{
-				m_chunkFutures.push_back(std::async(std::launch::async, generateChunkCallback, &m_chunks, startingPosition));
-				startingPosition.z += static_cast<float>(Chunk::s_chunkLength * relativeToPosition.z);
+				m_chunkFutures.push_back(std::async(std::launch::async, generateChunkCallback, &m_chunks, position));
+				position.z += static_cast<float>(Chunk::s_chunkLength * relativeToPosition.z);
 			}
-			startingPosition.z = 0.0f;
-			startingPosition.x += static_cast<float>(Chunk::s_chunkWidth * relativeToPosition.x);
+			position.z = startingPosition.z;
+			position.x += static_cast<float>(Chunk::s_chunkWidth * relativeToPosition.x);
 		}
 	}
 
 	void World::GenerateChunksSync(glm::vec3 startingPosition, glm::vec3 relativeToPosition)
 	{
-		for (int x = 0; x < 12 / 3; x++)
+		glm::vec3 position = startingPosition;
+		for (int x = 0; x < m_defaultChunkRenderCount; x++)
 		{
-			for (int z = 0; z < 12 / 3; z++)
+			for (int z = 0; z < m_defaultChunkRenderCount; z++)
 			{
-				m_chunks.push_back(Chunk::CreateChunk(startingPosition));
-				startingPosition.z += static_cast<float>(Chunk::s_chunkLength * relativeToPosition.z);
+				m_chunks.push_back(Chunk::CreateChunk(position));
+				position.z += static_cast<float>(Chunk::s_chunkLength * relativeToPosition.z);
 			}
-			startingPosition.z = 0.0f;
-			startingPosition.x += static_cast<float>(Chunk::s_chunkWidth * relativeToPosition.x);
+			position.z = startingPosition.z;
+			position.x += static_cast<float>(Chunk::s_chunkWidth * relativeToPosition.x);
 		}
 	}
 
