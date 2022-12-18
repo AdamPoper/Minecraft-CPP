@@ -9,6 +9,12 @@ namespace Mc
 	World::World()
 	{
 		m_chunks.reserve(m_defaultChunkRenderCount * m_defaultChunkRenderCount);
+
+		uint32_t chunksX = m_defaultChunkRenderCount * 2;
+		uint32_t chunksY = m_defaultChunkRenderCount * 2;
+		m_terrainNoise = CreateRef<PerlinNoise>(
+			glm::ivec2(chunksX * Chunk::s_chunkWidth, chunksY * Chunk::s_chunkLength));
+		Chunk::SetPerlinNoise(m_terrainNoise);
 	}
 
 	void World::OnWorldInit()
@@ -35,17 +41,17 @@ namespace Mc
 		GenerateChunksAsync(generateChunkAsync, 
 							glm::vec3(0.0f, m_worldBottom, -1.0f * Chunk::s_chunkLength),
 							glm::vec3(1.0f, 0.0f, -1.0f));
-
+		
 		GenerateChunksAsync(generateChunkAsync, 
 							glm::vec3(-1.0f * Chunk::s_chunkWidth, m_worldBottom, 0.0f),
 							glm::vec3(-1.0f, 0.0f,  1.0f));
-
+		
 		GenerateChunksAsync(generateChunkAsync, 
 							glm::vec3(-1.0f * Chunk::s_chunkWidth, m_worldBottom, -1.0f * Chunk::s_chunkLength),
 							glm::vec3(-1.0f, 0.0f, -1.0f));
 		
 		for (const std::future<void>& future : m_chunkFutures) future.wait();
-
+		
 		MC_PROFILE_END(Profiler::TimeFrame::SECONDS);
 #else
 
@@ -56,11 +62,11 @@ namespace Mc
 		GenerateChunksSync(
 			glm::vec3(0.0f, m_worldBottom, -1.0f * Chunk::s_chunkLength),
 			glm::vec3(1.0f, 0.0f, -1.0f));
-
+		
 		GenerateChunksSync(
 			glm::vec3(-1.0f * Chunk::s_chunkWidth, m_worldBottom, 0.0f),
 			glm::vec3(-1.0f, 0.0f, 1.0f));
-
+		
 		GenerateChunksSync(
 			glm::vec3(-1.0f * Chunk::s_chunkWidth, m_worldBottom, -1.0f * Chunk::s_chunkLength),
 			glm::vec3(-1.0f, 0.0f, -1.0f));
@@ -117,6 +123,11 @@ namespace Mc
 		}
 	}
 
+	int32_t World::GetWorldTop()
+	{
+		return s_instance.WorldTop();
+	}
+
 	/*
 		Instance methods
 	*/
@@ -129,5 +140,10 @@ namespace Mc
 	const std::vector<Ref<Chunk>>& World::GetChunks()
 	{
 		return s_instance.GetWorldChunks();
+	}
+
+	int32_t World::WorldTop()
+	{
+		return m_worldTop;
 	}
 }

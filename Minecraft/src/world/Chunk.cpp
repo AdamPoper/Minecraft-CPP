@@ -2,6 +2,8 @@
 
 namespace Mc
 {
+	Ref<PerlinNoise> Chunk::s_perlinNoise = nullptr;
+
 	Chunk::Chunk() :
 		m_position(0.0f, 0.0f, 0.0f),
 		m_blockPositions()
@@ -24,30 +26,46 @@ namespace Mc
 
 	void Chunk::Create(glm::vec3 position)
 	{
+		glm::ivec2 noiseMid = s_perlinNoise->GetSize() / 2;
+		uint32_t chunkCoreHeight = s_chunkHeight - (s_chunkHeight / 4);
+		uint32_t chunkTerrainHeight = s_chunkHeight - chunkCoreHeight;
 		for (int x = 0; x < s_chunkWidth; x++)
 		{
 			for (int z = 0; z < s_chunkLength; z++)
 			{
-				for (int y = 0; y < s_chunkHeight; y++)
-				{
-					m_blocks.emplace_back(BlockType::DIRT, position);
-					m_blockPositions.insert(
-						std::pair<glm::vec3, std::vector<Block>::iterator>(
-							position, --m_blocks.end()));
-					position.y += 1.0f;
-				}
+				CreateChunkPartly(chunkCoreHeight, BlockType::DIRT, position);
+				float rawNoiseValue = s_perlinNoise->
+					GetNoise(glm::ivec2(position.x + noiseMid.x, position.z + noiseMid.y));
+				uint32_t heightValue = static_cast<uint32_t>(rawNoiseValue * static_cast<const float>(chunkTerrainHeight));
+				CreateChunkPartly(heightValue - 1, BlockType::DIRT, position);
+				CreateChunkPartly(1, BlockType::DIRT_GRASS, position);
+				CreateChunkPartly(chunkTerrainHeight - heightValue, BlockType::AIR, position);
+				//CreateChunkPartly(1, BlockType::DIRT_GRASS, position);
 				position.y = m_position.y;
 				position.z += 1.0f;
 			}
 			position.z = m_position.z;
 			position.x += 1.0f;
 		}
+
 #define HASHING 1
 #if HASHING
 		OptimizeChunkHashing();
 #else
 		OptimizeChunkBruteForce();
 #endif
+	}
+
+	void Chunk::CreateChunkPartly(uint32_t heightValue, BlockType type, glm::vec3& position)
+	{
+		for (int y = 0; y < heightValue; y++)
+		{
+			m_blocks.emplace_back(type, position);
+			m_blockPositions.insert(
+				std::pair<glm::vec3, std::vector<Block>::iterator>(
+					position, --m_blocks.end()));
+			position.y += 1.0f;
+		}
 	}
 
 	glm::vec3 Chunk::GetPosition() const
@@ -75,6 +93,11 @@ namespace Mc
 		return s_chunkHeight * s_chunkLength * s_chunkWidth;
 	}
 
+	void Chunk::SetPerlinNoise(Ref<PerlinNoise> noise)
+	{
+		s_perlinNoise = noise;
+	}
+
 	void Chunk::CheckBlock(Block& testBlock, glm::vec3 position, bool& exists, Direction direction)
 	{
 		auto mapIter = m_blockPositions.find(position);
@@ -93,18 +116,18 @@ namespace Mc
 	{
 		glm::vec3 blockPosition = testBlock.GetPosition();
 
-		glm::vec3 front = blockPosition  + glm::vec3( 0.0f,  0.0f, -1.0f);
-		glm::vec3 back = blockPosition   + glm::vec3( 0.0f,  0.0f,  1.0f);
-		glm::vec3 right = blockPosition  + glm::vec3(-1.0f,  0.0f,  0.0f);
-		glm::vec3 left = blockPosition   + glm::vec3( 1.0f,  0.0f,  0.0f);
-		glm::vec3 top = blockPosition    + glm::vec3( 0.0f, -1.0f,  0.0f);
-		glm::vec3 bottom = blockPosition + glm::vec3( 0.0f,  1.0f,  0.0f);
+		glm::vec3 front  = blockPosition + glm::vec3( 0.0f,  0.0f,  1.0f);
+		glm::vec3 back   = blockPosition + glm::vec3( 0.0f,  0.0f, -1.0f);
+		glm::vec3 right  = blockPosition + glm::vec3( 1.0f,  0.0f,  0.0f);
+		glm::vec3 left   = blockPosition + glm::vec3(-1.0f,  0.0f,  0.0f);
+		glm::vec3 top    = blockPosition + glm::vec3( 0.0f,  1.0f,  0.0f);
+		glm::vec3 bottom = blockPosition + glm::vec3( 0.0f, -1.0f,  0.0f);
 
-		bool frontExists = false;
-		bool backExists = false;
-		bool rightExists = false;
-		bool leftExists = false;
-		bool topExists = false;
+		bool frontExists  = false;
+		bool backExists   = false;
+		bool rightExists  = false;
+		bool leftExists   = false;
+		bool topExists    = false;
 		bool bottomExists = false;
 
 		CheckBlock(testBlock, front,  frontExists,  Direction::FRONT);
@@ -132,12 +155,12 @@ namespace Mc
 	{
 		glm::vec3 blockPosition = testBlock.GetPosition();
 
-		glm::vec3 front = blockPosition + glm::vec3(0.0f, 0.0f, -1.0f);
-		glm::vec3 back = blockPosition + glm::vec3(0.0f, 0.0f, 1.0f);
-		glm::vec3 right = blockPosition + glm::vec3(-1.0f, 0.0f, 0.0f);
-		glm::vec3 left = blockPosition + glm::vec3(1.0f, 0.0f, 0.0f);
-		glm::vec3 top = blockPosition + glm::vec3(0.0f, -1.0f, 0.0f);
-		glm::vec3 bottom = blockPosition + glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 front  = blockPosition + glm::vec3( 0.0f,  0.0f, -1.0f);
+		glm::vec3 back   = blockPosition + glm::vec3( 0.0f,  0.0f,  1.0f);
+		glm::vec3 right  = blockPosition + glm::vec3(-1.0f,  0.0f,  0.0f);
+		glm::vec3 left   = blockPosition + glm::vec3( 1.0f,  0.0f,  0.0f);
+		glm::vec3 top    = blockPosition + glm::vec3( 0.0f,  1.0f,  0.0f);
+		glm::vec3 bottom = blockPosition + glm::vec3( 0.0f,  -1.0f,  0.0f);
 
 		bool frontExists = false;
 		bool backExists = false;
@@ -221,6 +244,12 @@ namespace Mc
 		for (Block& block : m_blocks)
 		{
 			CheckNeighboringBlocksHashing(block);
+			//block.SetBlockFaceToRender(Direction::FRONT);
+			//block.SetBlockFaceToRender(Direction::BACK);
+			//block.SetBlockFaceToRender(Direction::RIGHT);
+			//block.SetBlockFaceToRender(Direction::LEFT);
+			//block.SetBlockFaceToRender(Direction::TOP);
+			//block.SetBlockFaceToRender(Direction::BOTTOM);
 		}
 	}
 

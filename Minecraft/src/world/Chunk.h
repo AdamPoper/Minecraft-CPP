@@ -2,6 +2,7 @@
 
 #include "Block.h"
 #include "../Util/Ref.h"
+#include "../Util/PerlinNoise.h"
 
 #include <vector>
 #include <unordered_map>
@@ -43,9 +44,13 @@ namespace Mc
 
 		static Ref<Chunk> CreateChunk(glm::vec3 position);
 
+		static void SetPerlinNoise(Ref<PerlinNoise> noise);
+
 	private:
 
 		void Create(glm::vec3 position);
+
+		void CreateChunkPartly(uint32_t heightValue, BlockType type, glm::vec3& position);
 
 		void OptimizeChunkBruteForce();
 
@@ -64,6 +69,8 @@ namespace Mc
 		std::unordered_map<glm::vec3, std::vector<Block>::iterator, Vec3KeyHasher> m_blockPositions;
 
 		glm::vec3 m_position;
+
+		static Ref<PerlinNoise> s_perlinNoise;
 
 	public:
 

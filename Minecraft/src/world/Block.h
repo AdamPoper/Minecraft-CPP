@@ -43,8 +43,6 @@ namespace Mc
 
 		const std::array<const Vertex*, s_vertexCount>& GetVertices() const;
 
-		const 
-
 		const std::array<BlockFace, s_blockFacesCount>& GetBlockFaces() const;
 
 		void SetBlockType(BlockType blockType);
@@ -61,6 +59,8 @@ namespace Mc
 
 		const std::vector<const Vertex*>& CreateMesh();
 
+		const BlockFace& GetBlockFace(Direction direction) const;
+
 	private:
 
 		void InitBlockFaceTextures();
@@ -68,6 +68,11 @@ namespace Mc
 		void InitBlockFaceDirections();
 
 		void SetBlockFaceVertices();
+
+		BlockFace* GetBlockFaceByDirection(Direction direction);
+
+		const BlockFace* GetBlockFaceByDirection(Direction direction) const;
+
 
 	private:
 

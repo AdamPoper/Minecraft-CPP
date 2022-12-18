@@ -3,6 +3,7 @@
 #include <array>
 
 #include "../Util/Vertex.h"
+#include "../Util/Ref.h"
 #include "../Logger/Logger.h"
 #include "../Renderer/TextureAtlas.h"
 
@@ -45,6 +46,8 @@ namespace Mc
 
 		const std::array<Vertex, 4>& GetVertices() const;
 
+		std::array<Vertex, 4>& GetVertices();
+
 		void ChangeTexture(Texture texture);
 
 		void SetDirection(Direction direction);
@@ -58,6 +61,10 @@ namespace Mc
 		void SetShouldRender(bool shouldRender);
 
 		bool ShouldRender() const;
+
+		void ResetPositions();
+
+		bool HavePositionsChanged() const;
 
 	private:
 
@@ -74,8 +81,13 @@ namespace Mc
 	private:
 
 		std::array<Vertex, 4> m_vertices;
+
 		Texture m_texture;
+
 		Direction m_direction;
+
 		bool m_shouldRender = false;
+
+		bool m_havePositionsChanged = false;
 	};
 }

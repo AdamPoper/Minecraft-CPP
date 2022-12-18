@@ -26,9 +26,31 @@ void Game::OnGameInit()
     {
         for (Mc::Block& block : chunk->GetBlocks())
         {
-            for (const Vertex* vertex : block.CreateMesh())
+            if (block.GetBlockType() != Mc::BlockType::AIR)
             {
-                allBlockVertices.push_back(*vertex);
+                //for (const Vertex& v : block.GetBlockFace(Mc::Direction::TOP).GetVertices())
+                //{
+                //    allBlockVertices.push_back(v);
+                //}
+                //for (const Vertex& v : block.GetBlockFace(Mc::Direction::BOTTOM).GetVertices())
+                //{
+                //    allBlockVertices.push_back(v);
+                //}
+                //for (const Mc::BlockFace& face : block.GetBlockFaces())
+                //{
+                //    if (face.GetDirection() == Mc::Direction::TOP)
+                //    {
+                //        std::cout << "TOP Y: " << face.GetVertices()[0].position.y << std::endl;
+                //    }
+                //    if (face.GetDirection() == Mc::Direction::BOTTOM)
+                //    {
+                //        std::cout << "BOTTOM Y: " << face.GetVertices()[0].position.y << std::endl;
+                //    }
+                //}
+                for (const Vertex* vertex : block.CreateMesh())
+                {
+                    allBlockVertices.push_back(*vertex);
+                }
             }
         }
     }

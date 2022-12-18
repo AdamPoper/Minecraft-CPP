@@ -76,7 +76,18 @@ namespace Mc
         m_vertices[3].texCoords.y = ((y + 1) * texSize) / atlasDimensions.y;
     }
 
+    void BlockFace::ResetPositions()
+    {
+        InitVertexPositions();
+        m_havePositionsChanged = false;
+    }
+
     const std::array<Vertex, 4>& BlockFace::GetVertices() const
+    {
+        return m_vertices;
+    }
+
+    std::array<Vertex, 4>& BlockFace::GetVertices()
     {
         return m_vertices;
     }
@@ -106,7 +117,8 @@ namespace Mc
     void BlockFace::Translate(glm::vec3 transform)
     {
         for (Vertex& vertex : m_vertices)
-            vertex.position += transform;                
+            vertex.position += transform;
+        m_havePositionsChanged = true;
     }
 
     bool BlockFace::ShouldRender() const
@@ -117,5 +129,10 @@ namespace Mc
     void BlockFace::SetShouldRender(bool shouldRender)
     {
         m_shouldRender = shouldRender;
+    }
+
+    bool BlockFace::HavePositionsChanged() const
+    {
+        return m_havePositionsChanged;
     }
 }

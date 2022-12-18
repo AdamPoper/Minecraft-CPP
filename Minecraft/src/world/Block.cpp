@@ -85,7 +85,20 @@ namespace Mc
 			case BlockType::DIRT_GRASS:
 			{
 				for (BlockFace& blockFace : m_blockFaces)
-					blockFace.ChangeTexture(Texture::DIRT_GRASS);
+				{
+					if (blockFace.GetDirection() == Direction::TOP)
+					{
+						blockFace.ChangeTexture(Texture::GRASS);
+					}
+					else if (blockFace.GetDirection() == Direction::BOTTOM)
+					{
+						blockFace.ChangeTexture(Texture::DIRT);
+					}
+					else
+					{
+						blockFace.ChangeTexture(Texture::DIRT_GRASS);
+					}
+				}
 			}
 			break;
 			case BlockType::SAND:
@@ -175,23 +188,16 @@ namespace Mc
 		m_blockFaceDirections.insert(std::pair<Direction, BlockFace*>(Direction::BOTTOM, &m_blockFaces[5]));
 	}
 
-	void Block::SetPosition(glm::vec3 position)
+	void Block::SetPosition(glm::vec3 pos)
 	{
-		m_position = position;
+		m_position = pos;
 		for (BlockFace& blockFace : m_blockFaces)
 		{
-			glm::vec3 avg = glm::vec3(0.0f, 0.0f, 0.0f);
-			for (const Vertex& vertex : blockFace.GetVertices())
+			if (blockFace.HavePositionsChanged())
 			{
-				avg.x += vertex.position.x;
-				avg.y += vertex.position.y;
-				avg.z += vertex.position.z;
+				blockFace.ResetPositions();
 			}
-			avg.x /= 2.0f;
-			avg.y /= 2.0f;
-			avg.z /= 2.0f;
-			glm::vec3 transform = m_position - avg;
-			blockFace.Translate(transform);
+			blockFace.Translate(m_position);
 		}
 	}
 
@@ -204,11 +210,25 @@ namespace Mc
 
 	void Block::SetBlockFaceToRender(Direction dir)
 	{
+		BlockFace* blockFace = GetBlockFaceByDirection(dir);
+		if (blockFace != nullptr)
+		{
+			blockFace->SetShouldRender(true);
+		}
+	}
+
+	BlockFace* Block::GetBlockFaceByDirection(Direction dir)
+	{
 		auto iter = m_blockFaceDirections.find(dir);
 		if (iter != m_blockFaceDirections.end())
 		{
-			BlockFace* blockFace = iter->second;
-			blockFace->SetShouldRender(true);
+			return iter->second;
 		}
+		return nullptr;
+	}
+
+	const BlockFace* Block::GetBlockFaceByDirection(Direction dir) const
+	{
+		return GetBlockFaceByDirection(dir);
 	}
 }

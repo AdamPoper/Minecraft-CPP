@@ -2,6 +2,7 @@
 
 #include "Chunk.h"
 #include "../Util/TimeStep.h"
+#include "../Util/PerlinNoise.h"
 
 #include <vector>
 #include <future>
@@ -31,6 +32,8 @@ namespace Mc
 
 		uint32_t GetCountChunks() const;
 
+		int32_t WorldTop();
+
 		void GenerateChunksAsync(
 			std::function<void(std::vector<Ref<Chunk>>*, glm::vec3)> callback,
 			glm::vec3 startingPosition,
@@ -40,6 +43,10 @@ namespace Mc
 			glm::vec3 startingPosition,
 			glm::vec3 relativeToWorldCenter);
 
+	public:
+
+		static int32_t GetWorldTop();
+
 	private:
 
 		static World s_instance;
@@ -48,12 +55,16 @@ namespace Mc
 
 	private:
 
+		Ref<PerlinNoise> m_terrainNoise;
+
 		std::vector<Ref<Chunk>> m_chunks;
+
 		std::vector<std::future<void>> m_chunkFutures;
 
 		int32_t m_worldTop = 64;
+
 		int32_t m_worldBottom = -63;
 
-		const uint32_t m_defaultChunkRenderCount = 2;
+		const uint32_t m_defaultChunkRenderCount = 8;
 	};
 }
