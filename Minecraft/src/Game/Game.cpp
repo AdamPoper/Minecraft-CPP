@@ -28,25 +28,6 @@ void Game::OnGameInit()
         {
             if (block.GetBlockType() != Mc::BlockType::AIR)
             {
-                //for (const Vertex& v : block.GetBlockFace(Mc::Direction::TOP).GetVertices())
-                //{
-                //    allBlockVertices.push_back(v);
-                //}
-                //for (const Vertex& v : block.GetBlockFace(Mc::Direction::BOTTOM).GetVertices())
-                //{
-                //    allBlockVertices.push_back(v);
-                //}
-                //for (const Mc::BlockFace& face : block.GetBlockFaces())
-                //{
-                //    if (face.GetDirection() == Mc::Direction::TOP)
-                //    {
-                //        std::cout << "TOP Y: " << face.GetVertices()[0].position.y << std::endl;
-                //    }
-                //    if (face.GetDirection() == Mc::Direction::BOTTOM)
-                //    {
-                //        std::cout << "BOTTOM Y: " << face.GetVertices()[0].position.y << std::endl;
-                //    }
-                //}
                 for (const Vertex* vertex : block.CreateMesh())
                 {
                     allBlockVertices.push_back(*vertex);
@@ -83,6 +64,9 @@ void Game::OnGameInit()
 void Game::Run()
 {
     TimeStep ts;
+    FpsCounter fpsCounter;
+
+    fpsCounter.Init();
 
     while (m_windowHandle->IsOpen())
     {
@@ -112,6 +96,8 @@ void Game::Run()
         }
 
         Renderer::OnUpdate();
+        fpsCounter.Update();
+        std::cout << "FPS: " << fpsCounter.GetFPS() << std::endl;
     }
 }
 

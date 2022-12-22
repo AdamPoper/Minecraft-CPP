@@ -217,6 +217,15 @@ namespace Mc
 		}
 	}
 
+	void Block::SetBlockFaceToNotRender(Direction dir)
+	{
+		BlockFace* blockFace = GetBlockFaceByDirection(dir);
+		if (blockFace != nullptr)
+		{
+			blockFace->SetShouldRender(false);
+		}
+	}
+
 	BlockFace* Block::GetBlockFaceByDirection(Direction dir)
 	{
 		auto iter = m_blockFaceDirections.find(dir);

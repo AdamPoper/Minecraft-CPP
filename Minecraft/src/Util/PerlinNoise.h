@@ -35,5 +35,5 @@ private:
 
 	glm::ivec2 m_size;
 
-	const float m_scaleDivisor = 0.3f;
+	const float m_scaleDivisor = 0.5f;
 };

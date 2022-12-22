@@ -57,6 +57,8 @@ namespace Mc
 
 		void SetBlockFaceToRender(Direction dir);
 
+		void SetBlockFaceToNotRender(Direction dir);
+
 		const std::vector<const Vertex*>& CreateMesh();
 
 		const BlockFace& GetBlockFace(Direction direction) const;

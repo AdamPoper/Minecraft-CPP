@@ -2,6 +2,7 @@
 
 #include "../Renderer/Renderer.h"
 #include "../world/World.h"
+#include "../Util/FpsCounter.h"
 
 class Game
 {

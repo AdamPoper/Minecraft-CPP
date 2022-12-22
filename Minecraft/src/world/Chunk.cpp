@@ -40,13 +40,18 @@ namespace Mc
 				CreateChunkPartly(heightValue - 1, BlockType::DIRT, position);
 				CreateChunkPartly(1, BlockType::DIRT_GRASS, position);
 				CreateChunkPartly(chunkTerrainHeight - heightValue, BlockType::AIR, position);
-				//CreateChunkPartly(1, BlockType::DIRT_GRASS, position);
 				position.y = m_position.y;
 				position.z += 1.0f;
 			}
 			position.z = m_position.z;
 			position.x += 1.0f;
 		}
+
+		PopulateChunkFacesX(Direction::FRONT, m_position + glm::vec3(0.0f, 0.0f, static_cast<float>(s_chunkLength - 1)));
+		PopulateChunkFacesZ(Direction::RIGHT, m_position + glm::vec3(static_cast<float>(s_chunkWidth - 1), 0.0f, 0.0f));
+		PopulateChunkFacesX(Direction::BACK,  m_position);
+		PopulateChunkFacesZ(Direction::LEFT,  m_position);
+		PopulateChunkFacesBottom();
 
 #define HASHING 1
 #if HASHING
@@ -155,18 +160,18 @@ namespace Mc
 	{
 		glm::vec3 blockPosition = testBlock.GetPosition();
 
-		glm::vec3 front  = blockPosition + glm::vec3( 0.0f,  0.0f, -1.0f);
-		glm::vec3 back   = blockPosition + glm::vec3( 0.0f,  0.0f,  1.0f);
-		glm::vec3 right  = blockPosition + glm::vec3(-1.0f,  0.0f,  0.0f);
-		glm::vec3 left   = blockPosition + glm::vec3( 1.0f,  0.0f,  0.0f);
+		glm::vec3 front  = blockPosition + glm::vec3( 0.0f,  0.0f,  1.0f);
+		glm::vec3 back   = blockPosition + glm::vec3( 0.0f,  0.0f, -1.0f);
+		glm::vec3 right  = blockPosition + glm::vec3( 1.0f,  0.0f,  0.0f);
+		glm::vec3 left   = blockPosition + glm::vec3(-1.0f,  0.0f,  0.0f);
 		glm::vec3 top    = blockPosition + glm::vec3( 0.0f,  1.0f,  0.0f);
-		glm::vec3 bottom = blockPosition + glm::vec3( 0.0f,  -1.0f,  0.0f);
+		glm::vec3 bottom = blockPosition + glm::vec3( 0.0f, -1.0f,  0.0f);
 
-		bool frontExists = false;
-		bool backExists = false;
-		bool rightExists = false;
-		bool leftExists = false;
-		bool topExists = false;
+		bool frontExists  = false;
+		bool backExists   = false;
+		bool rightExists  = false;
+		bool leftExists   = false;
+		bool topExists    = false;
 		bool bottomExists = false;
 
 		for (Block& block : m_blocks)
@@ -259,5 +264,116 @@ namespace Mc
 		{
 			CheckNeighboringBlocksBruteForce(block);
 		}
+	}
+
+	void Chunk::PopulateChunkFacesZ(Direction direction, glm::vec3 startingPosition)
+	{
+		glm::vec3 blockPosition = startingPosition;
+		std::vector<std::vector<Block>::iterator> blockIters;
+		blockIters.reserve(sizeof(std::vector<Block>::iterator) * s_chunkHeight * s_chunkLength);
+		for (int y = 0; y < s_chunkHeight; y++)
+		{
+			for (int z = 0; z < s_chunkLength; z++)
+			{
+				auto iter = m_blockPositions.find(blockPosition);
+				if (iter != m_blockPositions.end())
+				{
+					blockIters.emplace_back(iter->second);
+				}
+				blockPosition.z += 1.0f;
+			}
+			blockPosition.z = startingPosition.z;
+			blockPosition.y += 1.0f;
+		}
+		m_chunkFaces.insert(std::pair<Direction, 
+			std::vector<std::vector<Block>::iterator>>(direction, std::move(blockIters)));
+	}
+
+	void Chunk::PopulateChunkFacesX(Direction direction, glm::vec3 startingPosition)
+	{
+		glm::vec3 blockPosition = startingPosition;
+		std::vector<std::vector<Block>::iterator> blockIters;
+		blockIters.reserve(sizeof(std::vector<Block>::iterator) * s_chunkHeight * s_chunkLength);
+		for (int y = 0; y < s_chunkHeight; y++)
+		{
+			for (int z = 0; z < s_chunkLength; z++)
+			{
+				auto iter = m_blockPositions.find(blockPosition);
+				if (iter != m_blockPositions.end())
+				{
+					blockIters.emplace_back(iter->second);
+				}
+				blockPosition.x += 1.0f;
+			}
+			blockPosition.x = startingPosition.x;
+			blockPosition.y += 1.0f;
+		}
+		m_chunkFaces.insert(std::pair<Direction,
+			std::vector<std::vector<Block>::iterator>>(direction, std::move(blockIters)));
+	}
+
+	void Chunk::PopulateChunkFacesBottom()
+	{
+		glm::vec3 blockPosition = m_position;
+		std::vector<std::vector<Block>::iterator> blockIters;
+		blockIters.reserve(sizeof(std::vector<Block>::iterator) * s_chunkWidth * s_chunkLength);
+		for (int x = 0; x < s_chunkWidth; x++)
+		{
+			for (int z = 0; z < s_chunkLength; z++)
+			{
+				auto iter = m_blockPositions.find(blockPosition);
+				if (iter != m_blockPositions.end())
+				{
+					blockIters.emplace_back(iter->second);
+				}
+				blockPosition.z += 1.0f;
+			}
+			blockPosition.z = m_position.z;
+			blockPosition.x += 1.0f;
+		}
+		m_chunkFaces.insert(std::pair<Direction,
+			std::vector<std::vector<Block>::iterator>>(Direction::BOTTOM, std::move(blockIters)));
+	}
+
+	void Chunk::SetDisableChunkFace(Direction dir)
+	{
+		auto iter = m_chunkFaces.find(dir);
+		if (iter != m_chunkFaces.end())
+		{
+			auto& blocks = iter->second;
+			for (auto& blockIter : blocks)
+			{
+				blockIter->SetBlockFaceToNotRender(dir);
+			}
+		}
+	}
+
+	const Block* Chunk::QueryForBlockByPosition(glm::vec3 position) const
+	{
+		return QueryForBlockByPosition(position);
+	}
+
+	Block* Chunk::QueryForBlockByPosition(glm::vec3 position)
+	{
+		auto iter = m_blockPositions.find(position);
+		if (iter != m_blockPositions.end())
+		{
+			return iter->second._Ptr;
+		}
+		return nullptr;
+	}
+
+	const std::vector<std::vector<Block>::iterator>& 
+		Chunk::GetChunkFaceByDirection(Direction dir) const
+	{
+		return GetChunkFaceByDirection(dir);
+	}
+
+	std::vector<std::vector<Block>::iterator>&
+		Chunk::GetChunkFaceByDirection(Direction dir)
+	{
+		auto iter = m_chunkFaces.find(dir);
+		assert(iter == m_chunkFaces.end());
+		return iter->second;
 	}
 }

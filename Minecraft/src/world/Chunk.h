@@ -38,6 +38,16 @@ namespace Mc
 
 		glm::vec3 GetPosition() const;
 
+		void SetDisableChunkFace(Direction dir);
+
+		const Block* QueryForBlockByPosition(glm::vec3 position) const;
+
+		Block* QueryForBlockByPosition(glm::vec3 position);
+
+		const std::vector<std::vector<Block>::iterator>& GetChunkFaceByDirection(Direction dir) const;
+
+		std::vector<std::vector<Block>::iterator>& GetChunkFaceByDirection(Direction dir);
+
 	public:
 
 		static const uint32_t BlocksPerChunk();
@@ -62,12 +72,20 @@ namespace Mc
 
 		void CheckBlock(Block& testBlock, glm::vec3 position, bool& exists, Direction direction);
 
+		void PopulateChunkFacesX(Direction direction, glm::vec3 startingPosition);
+
+		void PopulateChunkFacesZ(Direction direction, glm::vec3 startingPosition);
+
+		void PopulateChunkFacesBottom();
+
 	private:
 
 		std::vector<Block> m_blocks;
 
 		std::unordered_map<glm::vec3, std::vector<Block>::iterator, Vec3KeyHasher> m_blockPositions;
 
+		std::unordered_map<Direction, std::vector<std::vector<Block>::iterator>> m_chunkFaces;
+		
 		glm::vec3 m_position;
 
 		static Ref<PerlinNoise> s_perlinNoise;

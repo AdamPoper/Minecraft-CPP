@@ -43,6 +43,13 @@ namespace Mc
 			glm::vec3 startingPosition,
 			glm::vec3 relativeToWorldCenter);
 
+		void OptimizeChunkFaces();
+
+		void OptimizeChunkFace(Direction dir, Ref<Chunk> testChunk,
+			Ref<Chunk> chunk, glm::vec3 blockPositionOffset);
+
+		void CheckChunkFace(glm::vec3 position, Direction dir, Ref<Chunk> testChunk);
+
 	public:
 
 		static int32_t GetWorldTop();
@@ -60,6 +67,8 @@ namespace Mc
 		std::vector<Ref<Chunk>> m_chunks;
 
 		std::vector<std::future<void>> m_chunkFutures;
+
+		std::unordered_map<glm::vec3, Ref<Chunk>, Vec3KeyHasher> m_chunkPositionMap;
 
 		int32_t m_worldTop = 64;
 
