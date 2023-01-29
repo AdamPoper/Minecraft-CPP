@@ -2,6 +2,7 @@
 
 #include <string>
 #include "Camera.h"
+#include "../Util/Ref.h"
 
 #define MAX_KEYS		  512
 #define MAX_MOUSE_BUTTONS 32
@@ -22,11 +23,11 @@ public:
 
 	static bool IsMouseButtonPressed(uint32_t buttCode);
 
-	Camera& GetCamera() { return m_camera; }
+	Ref<Camera> GetCamera() { return m_camera; }
 
 private:
 
-	Camera m_camera;
+	Ref<Camera> m_camera;
 
 private:
 	GLFWwindow* m_window;
@@ -40,7 +41,8 @@ private:
 	static friend void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 };
 
-enum key {
+enum key
+{
 	KEY_UNKOWN = -1,
 	KEY_SPACE = 32,
 	KEY_APOSTROPHE = 39,

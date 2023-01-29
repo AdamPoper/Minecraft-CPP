@@ -54,9 +54,19 @@ void Camera::SetCameraSpeed(float speed)
 	m_cameraSpeed = speed;
 }
 
+float Camera::GetCameraSpeed()
+{
+	return m_cameraSpeed;
+}
+
 void Camera::TranslatePosition(const glm::vec3& transform)
 {
 	m_cameraPosition += transform;
+}
+
+glm::vec3 Camera::GetPosition()
+{
+	return m_cameraPosition;
 }
 
 void Camera::onCameraMouseMove(double xpos, double ypos)

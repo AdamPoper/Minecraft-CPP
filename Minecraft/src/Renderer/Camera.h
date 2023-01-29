@@ -32,7 +32,11 @@ public:
 
 	void SetCameraSpeed(float speed);
 
+	float GetCameraSpeed();
+
 	void TranslatePosition(const glm::vec3& transform);
+
+	glm::vec3 GetPosition();
 
 	float getFov() { return m_fov; }
 

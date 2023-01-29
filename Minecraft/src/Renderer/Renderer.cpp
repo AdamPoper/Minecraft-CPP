@@ -39,11 +39,11 @@ void Renderer::OnRendererInit()
 
 void Renderer::OnRendererUpdate()
 {
-    m_window->GetCamera().onUpdate();
+    m_window->GetCamera()->onUpdate();
 
     m_shaderProgram->SetUniform1i(TextureAtlas::GetOpenGLUniformID(), 0);
-    m_shaderProgram->SetUniformMat4("u_projection", m_window->GetCamera().getProjection());
-    m_shaderProgram->SetUniformMat4("u_view", m_window->GetCamera().getView());
+    m_shaderProgram->SetUniformMat4("u_projection", m_window->GetCamera()->getProjection());
+    m_shaderProgram->SetUniformMat4("u_view", m_window->GetCamera()->getView());
     m_shaderProgram->SetUniformMat4("u_model", glm::mat4(1.0f));
 
     TextureAtlas::Bind();
@@ -78,11 +78,6 @@ void Renderer::SetIndexBufferData(uint32_t* indices, size_t size)
 Ref<Window> Renderer::GetRenderingWindow()
 {
     return m_window;
-}
-
-Ref<Camera> Renderer::GetWindowCamera()
-{
-    return CreateRef<Camera>(m_window->GetCamera());
 }
 
 void Renderer::SetRendererTextureAtlasFilePath(const std::string& filepath, uint32_t countWidth, uint32_t countHeight)

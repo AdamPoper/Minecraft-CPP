@@ -16,12 +16,12 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	win->GetCamera().onCameraMouseMove(xpos, ypos);
+	win->GetCamera()->onCameraMouseMove(xpos, ypos);
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	win->GetCamera().adjustFov(yoffset);
+	win->GetCamera()->adjustFov(yoffset);
 }
 
 bool Window::IsMouseButtonPressed(uint32_t buttCode)
@@ -38,8 +38,8 @@ bool Window::IsKeyPressed(uint32_t keycode)
 }
 
 Window::Window(uint32_t width, uint32_t height, const std::string& title)
-	: m_camera(width, height)
 {
+	m_camera = CreateRef<Camera>(width, height);
 	if (glfwInit())
 	{
 		m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);

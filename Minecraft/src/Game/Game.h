@@ -3,6 +3,7 @@
 #include "../Renderer/Renderer.h"
 #include "../world/World.h"
 #include "../Util/FpsCounter.h"
+#include "../Player/Player.h"
 
 class Game
 {
@@ -28,9 +29,9 @@ private:
 
 private:
 
-	float m_playerSpeed = 5.0f;
-
-	bool m_isPlayerSprinting = false;
+	float m_playerSpeed = 10.0f;
 
 	Ref<Window> m_windowHandle;
+
+	Ref<Player> m_player;
 };

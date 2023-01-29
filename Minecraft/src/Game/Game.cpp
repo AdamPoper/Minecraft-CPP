@@ -9,12 +9,15 @@ void Game::OnGameInit()
 	Renderer::OnInit();
 
     m_windowHandle = Renderer::GetWindow();
+    m_player = CreateRef<Player>();
+    m_player->SetCamera(m_windowHandle->GetCamera());
+    m_player->SetSpeed(m_playerSpeed);
 
     MC_PROFILE_START("World Init");
 	Mc::World::OnInit();
     MC_PROFILE_END(Profiler::TimeFrame::SECONDS);
 
-    m_windowHandle->GetCamera().TranslatePosition(glm::vec3(0, 64.0f, 0));
+    m_player->TranslatePlayer(glm::vec3(0.0f, Mc::World::GetWorldTop(), 0.0f));
 
     const std::vector<Ref<Mc::Chunk>>& chunks = Mc::World::GetChunks();
 
@@ -74,25 +77,23 @@ void Game::Run()
         ts.start();
 
         if (Window::IsKeyPressed(KEY_W))
-            m_windowHandle->GetCamera().moveForward(ts);
+            m_player->MoveForward(ts);
         if (Window::IsKeyPressed(KEY_S))
-            m_windowHandle->GetCamera().moveBackward(ts);
+            m_player->MoveBackward(ts);
         if (Window::IsKeyPressed(KEY_A))
-            m_windowHandle->GetCamera().strafeLeft(ts);
+            m_player->StrafeLeft(ts);
         if (Window::IsKeyPressed(KEY_D))
-            m_windowHandle->GetCamera().strafeRight(ts);
+            m_player->StrafeRight(ts);
 
-        if (!m_isPlayerSprinting && Window::IsKeyPressed(KEY_LEFT_SHIFT))
+        if (!m_player->IsSprinting() && Window::IsKeyPressed(KEY_LEFT_SHIFT))
         {
-            m_isPlayerSprinting = true;
-            m_playerSpeed *= 2.0f;
-            m_windowHandle->GetCamera().SetCameraSpeed(m_playerSpeed);
+            m_player->SetSprinting(true);
+            m_player->SetSpeed(m_player->GetSpeed() * 2.0f);
         }
-        else if(m_isPlayerSprinting && !Window::IsKeyPressed(KEY_LEFT_SHIFT))
+        else if(m_player->IsSprinting() && !Window::IsKeyPressed(KEY_LEFT_SHIFT))
         {
-            m_isPlayerSprinting = false;
-            m_playerSpeed /= 2.0f;
-            m_windowHandle->GetCamera().SetCameraSpeed(m_playerSpeed);
+            m_player->SetSprinting(false);
+            m_player->SetSpeed(m_player->GetSpeed() / 2.0f);
         }
 
         Renderer::OnUpdate();

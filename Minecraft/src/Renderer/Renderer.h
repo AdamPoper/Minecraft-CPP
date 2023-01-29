@@ -49,8 +49,6 @@ private:
 
 	Ref<Window> GetRenderingWindow();
 
-	Ref<Camera> GetWindowCamera();
-
 private:
 
 	static Renderer s_instance;
