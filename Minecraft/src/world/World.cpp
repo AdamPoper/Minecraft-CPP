@@ -140,7 +140,8 @@ namespace Mc
 
 	void World::OptimizeChunkFaces()
 	{
-		for (Ref<Chunk> chunk : m_chunks) {
+		for (Ref<Chunk> chunk : m_chunks) 
+		{
 			glm::vec3 chunkPos = chunk->GetPosition();
 			glm::vec3 frontPosition = glm::vec3(chunkPos.x, chunkPos.y, chunkPos.z + Chunk::s_chunkLength);
 			glm::vec3 backPosition  = glm::vec3(chunkPos.x, chunkPos.y, chunkPos.z - Chunk::s_chunkLength);

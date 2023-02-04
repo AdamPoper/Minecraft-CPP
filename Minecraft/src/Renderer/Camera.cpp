@@ -44,6 +44,16 @@ void Camera::strafeRight(TimeStep ts)
 	m_cameraPosition += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_cameraSpeed * (float)ts;
 }
 
+void Camera::MoveUp(TimeStep ts)
+{
+	m_cameraPosition += m_cameraSpeed * ts * m_cameraUp;
+}
+
+void Camera::MoveDown(TimeStep ts)
+{
+
+}
+
 void Camera::adjustFov(float offset)
 {
 	m_fov -= offset;

@@ -84,6 +84,8 @@ void Game::Run()
             m_player->StrafeLeft(ts);
         if (Window::IsKeyPressed(KEY_D))
             m_player->StrafeRight(ts);
+        if (Window::IsKeyPressed(KEY_SPACE))
+            m_player->MoveUp(ts);
 
         if (!m_player->IsSprinting() && Window::IsKeyPressed(KEY_LEFT_SHIFT))
         {

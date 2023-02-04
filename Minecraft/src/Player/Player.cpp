@@ -35,6 +35,16 @@ void Player::MoveBackward(TimeStep ts)
 	m_camera->moveBackward(ts);
 }
 
+void Player::MoveUp(TimeStep ts)
+{
+	m_camera->MoveUp(ts);
+}
+
+void Player::MoveDown(TimeStep ts)
+{
+	m_camera->MoveDown(ts);
+}
+
 glm::vec3 Player::GetPostion()
 {
 	return m_camera->GetPosition();

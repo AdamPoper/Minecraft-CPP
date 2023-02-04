@@ -28,6 +28,10 @@ public:
 
 	void strafeRight(TimeStep ts);
 
+	void MoveUp(TimeStep ts);
+
+	void MoveDown(TimeStep ts);
+
 	void adjustFov(float offset);
 
 	void SetCameraSpeed(float speed);

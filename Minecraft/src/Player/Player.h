@@ -24,6 +24,10 @@ public:
 
 	void MoveBackward(TimeStep ts);
 
+	void MoveUp(TimeStep ts);
+
+	void MoveDown(TimeStep ts);
+
 	glm::vec3 GetPostion();
 
 	void TranslatePlayer(glm::vec3 transform);
